@@ -2,11 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { House } from '@phosphor-icons/react/dist/csr/House'
-import { Bank } from '@phosphor-icons/react/dist/csr/Bank'
-import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
-import { Scroll } from '@phosphor-icons/react/dist/csr/Scroll'
-import { MagnifyingGlass } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
+import { Bank, House, MagnifyingGlass, Plus, Scroll } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
 export function BottomNav({ followedCode }: { followedCode: string }) {
