@@ -1,4 +1,4 @@
-import { ShieldCheck } from '@phosphor-icons/react'
+import { ShieldCheck } from '@phosphor-icons/react/dist/ssr/ShieldCheck'
 
 export function HonestyNote() {
   return (
