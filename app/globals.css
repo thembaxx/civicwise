@@ -1,0 +1,140 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-public-sans), 'Public Sans', system-ui, sans-serif;
+  --font-heading: var(--font-archivo), 'Archivo', system-ui, sans-serif;
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+/* Palette: municipal ink green, road-marking yellow, cool concrete neutrals. */
+:root {
+  color-scheme: light;
+  --background: oklch(0.962 0.006 160);
+  --foreground: oklch(0.24 0.035 168);
+  --card: oklch(0.995 0.002 160);
+  --card-foreground: oklch(0.24 0.035 168);
+  --popover: oklch(0.995 0.002 160);
+  --popover-foreground: oklch(0.24 0.035 168);
+  --primary: oklch(0.85 0.16 89);
+  --primary-foreground: oklch(0.24 0.035 168);
+  --secondary: oklch(0.24 0.035 168);
+  --secondary-foreground: oklch(0.962 0.006 160);
+  --muted: oklch(0.925 0.01 160);
+  --muted-foreground: oklch(0.47 0.022 168);
+  --accent: oklch(0.925 0.01 160);
+  --accent-foreground: oklch(0.24 0.035 168);
+  --destructive: oklch(0.56 0.2 28);
+  --border: oklch(0.88 0.012 160);
+  --input: oklch(0.88 0.012 160);
+  --ring: oklch(0.47 0.022 168);
+  --chart-1: oklch(0.24 0.035 168);
+  --chart-2: oklch(0.85 0.16 89);
+  --chart-3: oklch(0.78 0.015 160);
+  --radius: 0.75rem;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.19 0.022 168);
+  --foreground: oklch(0.95 0.006 160);
+  --card: oklch(0.235 0.024 168);
+  --card-foreground: oklch(0.95 0.006 160);
+  --popover: oklch(0.235 0.024 168);
+  --popover-foreground: oklch(0.95 0.006 160);
+  --primary: oklch(0.85 0.16 89);
+  --primary-foreground: oklch(0.19 0.022 168);
+  --secondary: oklch(0.95 0.006 160);
+  --secondary-foreground: oklch(0.19 0.022 168);
+  --muted: oklch(0.29 0.022 168);
+  --muted-foreground: oklch(0.74 0.015 160);
+  --accent: oklch(0.29 0.022 168);
+  --accent-foreground: oklch(0.95 0.006 160);
+  --destructive: oklch(0.68 0.19 28);
+  --border: oklch(0.33 0.022 168);
+  --input: oklch(0.33 0.022 168);
+  --ring: oklch(0.74 0.015 160);
+  --chart-1: oklch(0.95 0.006 160);
+  --chart-2: oklch(0.85 0.16 89);
+  --chart-3: oklch(0.4 0.022 168);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+    --background: oklch(0.19 0.022 168);
+    --foreground: oklch(0.95 0.006 160);
+    --card: oklch(0.235 0.024 168);
+    --card-foreground: oklch(0.95 0.006 160);
+    --popover: oklch(0.235 0.024 168);
+    --popover-foreground: oklch(0.95 0.006 160);
+    --primary: oklch(0.85 0.16 89);
+    --primary-foreground: oklch(0.19 0.022 168);
+    --secondary: oklch(0.95 0.006 160);
+    --secondary-foreground: oklch(0.19 0.022 168);
+    --muted: oklch(0.29 0.022 168);
+    --muted-foreground: oklch(0.74 0.015 160);
+    --accent: oklch(0.29 0.022 168);
+    --accent-foreground: oklch(0.95 0.006 160);
+    --destructive: oklch(0.68 0.19 28);
+    --border: oklch(0.33 0.022 168);
+    --input: oklch(0.33 0.022 168);
+    --ring: oklch(0.74 0.015 160);
+    --chart-1: oklch(0.95 0.006 160);
+    --chart-2: oklch(0.85 0.16 89);
+    --chart-3: oklch(0.4 0.022 168);
+  }
+}
+
+/* Road centre-line used as the spine of every report history. */
+@utility road-line {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--primary) 0,
+    var(--primary) 10px,
+    transparent 10px,
+    transparent 18px
+  );
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+  }
+}
