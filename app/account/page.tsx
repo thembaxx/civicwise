@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Check, DownloadSimple as Download } from '@phosphor-icons/react'
+import { Check, DownloadSimple as Download } from '@phosphor-icons/react/dist/ssr'
 import { getMunicipalityProfile } from '@/lib/municipal-money'
 import { getFollowedCode } from '@/lib/session'
 import { cn } from '@/lib/utils'

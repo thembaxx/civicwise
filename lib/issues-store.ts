@@ -135,6 +135,7 @@ export function createIssue(
     description: string
     location: string
     ward?: string
+    photoUrl?: string
   },
 ) {
   const now = new Date().toISOString()

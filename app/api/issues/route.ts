@@ -29,6 +29,9 @@ export async function POST(request: NextRequest) {
     description: clean(body.description, 600),
     location: clean(body.location, 140),
     ward: clean(body.ward, 6) || undefined,
+    photoUrl: typeof body.photoUrl === 'string' && body.photoUrl.startsWith('data:image/')
+      ? body.photoUrl.slice(0, 1_500_000)
+      : undefined,
   }
 
   if (!(category in CATEGORIES)) {

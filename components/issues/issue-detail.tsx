@@ -50,6 +50,12 @@ export function IssueDetail({ initial }: { initial: Issue }) {
             </span>
           </p>
           {issue.description && <p className="text-sm leading-relaxed text-pretty">{issue.description}</p>}
+          {issue.photoUrl ? (
+            <figure className="overflow-hidden rounded-xl border border-border bg-muted">
+              <img src={issue.photoUrl} alt={`Photo attached to ${issue.title}`} className="max-h-80 w-full object-cover" />
+              <figcaption className="px-3 py-2 text-xs text-muted-foreground">Photo attached by the reporting resident</figcaption>
+            </figure>
+          ) : null}
           <StatusBadge issue={issue} className="self-start" />
         </div>
         <dl className="grid grid-cols-3 border-t-2 border-dashed border-border">

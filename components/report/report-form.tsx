@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSWRConfig } from 'swr'
-import { Crosshair, Info, Spinner } from '@phosphor-icons/react'
+import { Camera, Crosshair, Info, Spinner, X } from '@phosphor-icons/react'
 import { CATEGORY_ICON } from '@/components/issue-meta'
 import { CATEGORIES, CATEGORY_LABEL, type Category } from '@/lib/reports'
 import { cn } from '@/lib/utils'
@@ -26,7 +26,27 @@ export function ReportForm({
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [locating, setLocating] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
+  const [photoError, setPhotoError] = useState('')
+  const photoInputRef = useRef<HTMLInputElement>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  function handlePhoto(file?: File) {
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setPhotoError('Choose an image file.')
+      return
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setPhotoError('Photos must be smaller than 8 MB.')
+      return
+    }
+    setPhotoError('')
+    const reader = new FileReader()
+    reader.onload = () => setPhotoUrl(typeof reader.result === 'string' ? reader.result : null)
+    reader.onerror = () => setPhotoError('This photo could not be attached.')
+    reader.readAsDataURL(file)
+  }
 
   function locate() {
     if (!navigator.geolocation) return
@@ -56,6 +76,7 @@ export function ReportForm({
         location: form.get('location'),
         ward: form.get('ward'),
         description: form.get('description'),
+        photoUrl,
         ...coords,
       }),
     })
@@ -137,6 +158,42 @@ export function ReportForm({
 
       <Field label="Ward (optional)" id="ward">
         <input id="ward" name="ward" inputMode="numeric" maxLength={10} placeholder="e.g. 57" className={inputClass} />
+      </Field>
+
+      <Field label="Photo (optional)" id="photo">
+        <input
+          ref={photoInputRef}
+          id="photo"
+          name="photo"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={(event) => handlePhoto(event.target.files?.[0])}
+          className="sr-only"
+        />
+        {photoUrl ? (
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
+            <img src={photoUrl} alt="Attached issue photo preview" className="max-h-64 w-full object-cover" />
+            <button
+              type="button"
+              onClick={() => { setPhotoUrl(null); if (photoInputRef.current) photoInputRef.current.value = '' }}
+              className="absolute right-2 top-2 inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur transition-transform active:scale-95"
+              aria-label="Remove attached photo"
+            >
+              <X className="size-5" aria-hidden="true" />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => photoInputRef.current?.click()}
+            className="flex min-h-24 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted active:scale-[.99]"
+          >
+            <Camera className="size-5 text-primary" aria-hidden="true" />
+            Take a photo or choose from library
+          </button>
+        )}
+        {photoError ? <p className="text-sm font-medium text-destructive" role="alert">{photoError}</p> : null}
       </Field>
 
       <Field label="Details (optional)" id="description">

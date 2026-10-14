@@ -50,6 +50,7 @@ export type Issue = {
   description: string
   location: string
   ward?: string
+  photoUrl?: string
   createdAt: string
   status: IssueStatus
   municipalReference?: string
