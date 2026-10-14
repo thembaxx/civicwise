@@ -14,18 +14,23 @@ export function ReportsTabs() {
   const [scope, setScope] = useState<'mine' | 'all'>('mine')
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-3">
-        <div role="tablist" aria-label="Whose reports" className="flex rounded-full bg-muted p-1">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div
+          role="group"
+          aria-label="Whose reports"
+          className="flex rounded-xl bg-muted p-1"
+        >
           {TABS.map((t) => (
             <button
               key={t.id}
-              role="tab"
-              aria-selected={scope === t.id}
+              aria-pressed={scope === t.id}
               onClick={() => setScope(t.id)}
               className={cn(
-                'rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
-                scope === t.id ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground',
+                'min-h-11 rounded-lg px-5 py-2 text-sm font-medium transition-colors',
+                scope === t.id
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:text-foreground',
               )}
             >
               {t.label}
@@ -34,14 +39,15 @@ export function ReportsTabs() {
         </div>
         <a
           href={`/api/issues/export?scope=${scope}`}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 text-xs font-semibold hover:bg-muted"
+          className="button-outline"
         >
-          <Download className="size-3.5" aria-hidden />
-          CSV
+          <Download className="size-4" aria-hidden />
+          Export CSV
         </a>
       </div>
-      <div role="tabpanel">
+      <div>
         <IssueList
+          columns
           scope={scope}
           emptyText={
             scope === 'mine'

@@ -1,200 +1,326 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
-  --font-heading: var(--font-manrope), 'Manrope', system-ui, sans-serif;
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-heading: var(--font-editorial), Georgia, serif;
   --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--ring);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.75rem;
+  --radius-3xl: 2rem;
 }
-
-/* Palette: near-black civic ink, electric blue actions, and warm signal yellow. */
 :root {
   color-scheme: light;
-  --background: oklch(0.975 0.004 285);
-  --foreground: oklch(0.16 0.018 285);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.16 0.018 285);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.16 0.018 285);
-  --primary: oklch(0.62 0.24 258);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.16 0.018 285);
-  --secondary-foreground: oklch(0.98 0.004 285);
-  --muted: oklch(0.93 0.008 285);
-  --muted-foreground: oklch(0.48 0.025 285);
-  --accent: oklch(0.94 0.17 102);
-  --accent-foreground: oklch(0.16 0.018 285);
-  --destructive: oklch(0.62 0.22 25);
-  --border: oklch(0.88 0.012 285);
-  --input: oklch(0.88 0.012 285);
-  --ring: oklch(0.62 0.24 258);
-  --chart-1: oklch(0.62 0.24 258);
-  --chart-2: oklch(0.94 0.17 102);
-  --chart-3: oklch(0.7 0.08 285);
-  --radius: 1.15rem;
+  --background: #f2f0e9;
+  --foreground: #171715;
+  --card: #fcfbf7;
+  --primary: #c8ff35;
+  --primary-foreground: #171715;
+  --secondary: #171715;
+  --secondary-foreground: #f2f0e9;
+  --muted: #e6e2d8;
+  --muted-foreground: #646257;
+  --accent: #e9e6dd;
+  --destructive: #a43229;
+  --border: #d8d2c7;
+  --ring: #315b46;
+  --positive: #315b46;
+  --positive-soft: #e0eadf;
+  --chart-1: #315b46;
+  --chart-2: #8d826b;
+  --chart-3: #847e70;
 }
-
 .dark {
   color-scheme: dark;
-  --background: oklch(0.105 0.012 285);
-  --foreground: oklch(0.98 0.004 285);
-  --card: oklch(0.16 0.014 285);
-  --card-foreground: oklch(0.98 0.004 285);
-  --popover: oklch(0.16 0.014 285);
-  --popover-foreground: oklch(0.98 0.004 285);
-  --primary: oklch(0.62 0.24 258);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.98 0.004 285);
-  --secondary-foreground: oklch(0.105 0.012 285);
-  --muted: oklch(0.22 0.014 285);
-  --muted-foreground: oklch(0.7 0.018 285);
-  --accent: oklch(0.94 0.17 102);
-  --accent-foreground: oklch(0.105 0.012 285);
-  --destructive: oklch(0.7 0.19 25);
-  --border: oklch(0.27 0.014 285);
-  --input: oklch(0.27 0.014 285);
-  --ring: oklch(0.62 0.24 258);
-  --chart-1: oklch(0.62 0.24 258);
-  --chart-2: oklch(0.94 0.17 102);
-  --chart-3: oklch(0.44 0.018 285);
+  --background: #181b16;
+  --foreground: #f2f0e9;
+  --card: #22271f;
+  --secondary: #d8d2c7;
+  --secondary-foreground: #171715;
+  --muted: #30362b;
+  --muted-foreground: #c0bdb2;
+  --accent: #30362b;
+  --destructive: #ffa99c;
+  --border: #485041;
+  --ring: #c8ff35;
+  --positive: #b1d6b8;
+  --positive-soft: #273f2c;
+  --chart-1: #98bca1;
+  --chart-2: #ab9f88;
+  --chart-3: #555e4c;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    color-scheme: dark;
-    --background: oklch(0.105 0.012 285);
-    --foreground: oklch(0.98 0.004 285);
-    --card: oklch(0.16 0.014 285);
-    --card-foreground: oklch(0.95 0.006 160);
-    --popover: oklch(0.16 0.014 285);
-    --popover-foreground: oklch(0.95 0.006 160);
-    --primary: oklch(0.62 0.24 258);
-    --primary-foreground: oklch(0.105 0.012 285);
-    --secondary: oklch(0.95 0.006 160);
-    --secondary-foreground: oklch(0.105 0.012 285);
-    --muted: oklch(0.22 0.014 285);
-    --muted-foreground: oklch(0.7 0.018 285);
-    --accent: oklch(0.22 0.014 285);
-    --accent-foreground: oklch(0.95 0.006 160);
-    --destructive: oklch(0.68 0.19 28);
-    --border: oklch(0.27 0.014 285);
-    --input: oklch(0.27 0.014 285);
-    --ring: oklch(0.7 0.018 285);
-    --chart-1: oklch(0.95 0.006 160);
-    --chart-2: oklch(0.62 0.24 258);
-    --chart-3: oklch(0.44 0.018 285);
-  }
-}
-
-/* Road centre-line used as the spine of every report history. */
-@utility road-line {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    var(--primary) 0,
-    var(--primary) 10px,
-    transparent 10px,
-    transparent 18px
-  );
-}
-
 @layer base {
+  * {
+    @apply border-border;
+  }
   html {
-    background: var(--background);
-    color-scheme: light;
     scroll-behavior: smooth;
+    scroll-padding-top: 2rem;
     text-rendering: optimizeLegibility;
-  }
-
-  body {
-    min-height: 100dvh;
-    background: var(--background);
-    transition: background-color 280ms ease, color 280ms ease;
-  }
-
-  html.dark {
-    color-scheme: dark;
-  }
-
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  * {
-    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground font-sans;
+    min-height: 100dvh;
   }
   h1,
   h2,
   h3 {
-    font-family: var(--font-heading);
+    text-wrap: balance;
   }
-
-  ::selection {
-    background: color-mix(in oklab, var(--primary) 70%, transparent);
-    color: var(--primary-foreground);
+  input,
+  select,
+  textarea,
+  button {
+    font-family: var(--font-sans);
   }
-
-  button, a {
+  input,
+  textarea {
+    @apply placeholder:text-muted-foreground;
+  }
+  button,
+  a,
+  summary {
     touch-action: manipulation;
   }
+  button:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: #c8ff35;
+    color: #171715;
+  }
 }
-
+@utility road-line {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--border) 0,
+    var(--border) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+@layer components {
+  .site-width {
+    width: min(100% - 40px, 1184px);
+    margin-inline: auto;
+  }
+  .site-main {
+    padding-block: 44px 64px;
+  }
+  .content-narrow {
+    width: 100%;
+    max-width: 800px;
+    margin-inline: auto;
+  }
+  .page-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+  .page-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.35rem, 4vw, 3.5rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 1.12;
+  }
+  .editorial-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+  }
+  .panel,
+  .report-action,
+  .issue-card {
+    corner-shape: squircle;
+  }
+  .panel {
+    border-radius: 28px;
+  }
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-underline-offset: 4px;
+  }
+  .text-link:hover {
+    text-decoration: underline;
+  }
+  .button-primary,
+  .button-secondary,
+  .button-outline {
+    display: inline-flex;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 16px;
+    padding: 12px 18px;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition:
+      background-color 180ms ease,
+      transform 180ms ease;
+  }
+  .button-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .button-primary:hover {
+    background: #b8ed27;
+  }
+  .button-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+  .button-secondary:hover {
+    opacity: 0.88;
+  }
+  .button-outline {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--foreground);
+  }
+  .button-outline:hover {
+    background: var(--muted);
+  }
+  :is(.button-primary, .button-secondary, .button-outline):active {
+    transform: translateY(1px);
+  }
+  :is(.button-primary, .button-secondary, .button-outline):disabled {
+    opacity: 0.6;
+    transform: none;
+  }
+  .field {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--card);
+    padding: 12px 14px;
+    font-size: 1rem;
+  }
+  .field:hover {
+    border-color: var(--muted-foreground);
+  }
+  .field:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  .hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.9rem, 5.7vw, 5rem);
+    font-weight: 400;
+    letter-spacing: -0.055em;
+    line-height: 1.02;
+  }
+  .report-action {
+    background: #c8ff35;
+    color: #171715;
+    border-radius: 32px;
+    transition:
+      background-color 200ms ease,
+      transform 200ms ease;
+  }
+  .report-action:hover {
+    background: #c1f62f;
+    transform: translateY(-3px);
+  }
+  .report-action:focus-visible {
+    outline: 3px solid #315b46;
+    outline-offset: 5px;
+  }
+  .site-footer {
+    padding-block: 28px 36px;
+    border-top: 1px solid var(--border);
+  }
+}
 @keyframes civic-enter {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
-@keyframes civic-pop {
-  0% { transform: scale(.94); }
-  70% { transform: scale(1.03); }
-  100% { transform: scale(1); }
+.site-main > * {
+  animation: civic-enter 350ms ease both;
 }
-
-main > * {
-  animation: civic-enter 500ms cubic-bezier(.22, 1, .36, 1) both;
+@layer components {
+  @media (max-width: 1023px) {
+    .site-main {
+      padding-block: 32px 48px;
+    }
+    .site-footer {
+      padding-bottom: calc(116px + env(safe-area-inset-bottom));
+    }
+  }
+  @media (max-width: 639px) {
+    .site-width {
+      width: calc(100% - 32px);
+    }
+    .site-main {
+      padding-top: 28px;
+    }
+    .page-stack {
+      gap: 24px;
+    }
+    .panel {
+      border-radius: 24px;
+    }
+  }
 }
-
-main > *:nth-child(2) { animation-delay: 55ms; }
-main > *:nth-child(3) { animation-delay: 110ms; }
-main > *:nth-child(4) { animation-delay: 165ms; }
-
-.brand-mark { animation: civic-pop 700ms cubic-bezier(.22, 1, .36, 1) both; }
-
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     scroll-behavior: auto !important;
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
+    animation: none !important;
+    transition: none !important;
   }
 }

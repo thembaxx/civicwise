@@ -1,5 +1,11 @@
 import 'server-only'
-import type { Category, EventType, Issue, IssueAction, IssueEvent } from './issues'
+import type {
+  Category,
+  EventType,
+  Issue,
+  IssueAction,
+  IssueEvent,
+} from './issues'
 
 /**
  * In-memory store for the prototype. Swap for a database table
@@ -17,7 +23,13 @@ function hoursAgo(h: number) {
 }
 
 function seedEvent(type: EventType, h: number, note?: string): IssueEvent {
-  return { id: crypto.randomUUID(), type, at: hoursAgo(h), actor: 'resident', note }
+  return {
+    id: crypto.randomUUID(),
+    type,
+    at: hoursAgo(h),
+    actor: 'resident',
+    note,
+  }
 }
 
 function seed(): StoredIssue[] {
@@ -28,12 +40,17 @@ function seed(): StoredIssue[] {
       municipalityName: 'Cape Town',
       category: 'pothole' as Category,
       title: 'Deep pothole in left lane',
-      description: 'About 40cm wide, cars swerving into oncoming traffic after dark.',
+      description:
+        'About 40cm wide, cars swerving into oncoming traffic after dark.',
       location: 'Voortrekker Rd near Elsies River Station',
       ward: '25',
       events: [
         seedEvent('logged', 24 * 19),
-        seedEvent('reported_to_municipality', 24 * 19 - 1, 'Logged via the City app'),
+        seedEvent(
+          'reported_to_municipality',
+          24 * 19 - 1,
+          'Logged via the City app',
+        ),
         seedEvent('municipal_reference_added', 24 * 19 - 1, 'Ref 9112458730'),
         seedEvent('community_confirmed', 24 * 12),
         seedEvent('community_confirmed', 24 * 6),
@@ -48,10 +65,14 @@ function seed(): StoredIssue[] {
       municipalityName: 'Cape Town',
       category: 'streetlight' as Category,
       title: 'Three streetlights out on one block',
-      description: 'Whole stretch is dark between the school and the taxi rank.',
+      description:
+        'Whole stretch is dark between the school and the taxi rank.',
       location: 'Lansdowne Rd, Philippi',
       ward: '80',
-      events: [seedEvent('logged', 24 * 8), seedEvent('community_confirmed', 24 * 5)],
+      events: [
+        seedEvent('logged', 24 * 8),
+        seedEvent('community_confirmed', 24 * 5),
+      ],
       confirmers: ['a', 'b'],
     },
     {
@@ -60,14 +81,19 @@ function seed(): StoredIssue[] {
       municipalityName: 'Cape Town',
       category: 'water' as Category,
       title: 'Burst pipe running for days',
-      description: 'Clean water flowing into the stormwater drain since the weekend.',
+      description:
+        'Clean water flowing into the stormwater drain since the weekend.',
       location: 'Corner of Main Rd & Belmont Rd, Rondebosch',
       ward: '59',
       events: [
         seedEvent('logged', 70),
         seedEvent('reported_to_municipality', 69),
         seedEvent('community_confirmed', 40),
-        seedEvent('resident_reports_fixed', 6, 'Crew on site this morning, water off'),
+        seedEvent(
+          'resident_reports_fixed',
+          6,
+          'Crew on site this morning, water off',
+        ),
       ],
       confirmers: ['a'],
       status: 'resident_reports_fixed' as const,
@@ -81,7 +107,10 @@ function seed(): StoredIssue[] {
       description: 'Entire street without water, no notice given.',
       location: 'Melville, 7th Street',
       ward: '87',
-      events: [seedEvent('logged', 24 * 4), seedEvent('community_confirmed', 24 * 3)],
+      events: [
+        seedEvent('logged', 24 * 4),
+        seedEvent('community_confirmed', 24 * 3),
+      ],
       confirmers: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'],
     },
   ]
@@ -89,13 +118,17 @@ function seed(): StoredIssue[] {
   return base.map((b) => ({
     id: crypto.randomUUID(),
     ownerId: SEED_OWNER,
+    sample: true,
     status: 'open',
     createdAt: b.events[0].at,
     ...b,
   }))
 }
 
-const globalStore = globalThis as unknown as { __matIssues?: StoredIssue[]; __matCounter?: number }
+const globalStore = globalThis as unknown as {
+  __matIssues?: StoredIssue[]
+  __matCounter?: number
+}
 globalStore.__matIssues ??= seed()
 globalStore.__matCounter ??= 120
 
@@ -112,9 +145,14 @@ function toPublic(issue: StoredIssue, viewerId: string): Issue {
   }
 }
 
-export function listIssues(viewerId: string, opts: { municipality?: string; scope?: 'mine' | 'all' }) {
+export function listIssues(
+  viewerId: string,
+  opts: { municipality?: string; scope?: 'mine' | 'all' },
+) {
   return issues
-    .filter((i) => (opts.municipality ? i.municipalityCode === opts.municipality : true))
+    .filter((i) =>
+      opts.municipality ? i.municipalityCode === opts.municipality : true,
+    )
     .filter((i) => (opts.scope === 'mine' ? i.ownerId === viewerId : true))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .map((i) => toPublic(i, viewerId))
@@ -147,7 +185,9 @@ export function createIssue(
     confirmers: [],
     status: 'open',
     createdAt: now,
-    events: [{ id: crypto.randomUUID(), type: 'logged', at: now, actor: 'you' }],
+    events: [
+      { id: crypto.randomUUID(), type: 'logged', at: now, actor: 'you' },
+    ],
     ...input,
   }
   issues.push(issue)
@@ -159,11 +199,18 @@ export function applyAction(viewerId: string, id: string, action: IssueAction) {
   if (!issue) return null
   const actor = issue.ownerId === viewerId ? 'you' : 'resident'
   const push = (type: EventType, note?: string) =>
-    issue.events.push({ id: crypto.randomUUID(), type, at: new Date().toISOString(), actor, note })
+    issue.events.push({
+      id: crypto.randomUUID(),
+      type,
+      at: new Date().toISOString(),
+      actor,
+      note,
+    })
 
   switch (action.type) {
     case 'confirm':
-      if (issue.ownerId === viewerId || issue.confirmers.includes(viewerId)) break
+      if (issue.ownerId === viewerId || issue.confirmers.includes(viewerId))
+        break
       issue.confirmers.push(viewerId)
       push('community_confirmed')
       break

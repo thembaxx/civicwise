@@ -6,14 +6,21 @@ import { HonestyNote } from '@/components/issues/honesty-note'
 import { getIssue } from '@/lib/issues-store'
 import { getViewerId } from '@/lib/viewer'
 
-export default async function IssuePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function IssuePage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
   const { id } = await params
   const issue = getIssue(await getViewerId(), id)
   if (!issue) notFound()
 
   return (
-    <div className="flex flex-col gap-4 pt-1">
-      <Link href="/reports" className="inline-flex items-center gap-1 self-start text-sm font-semibold text-muted-foreground">
+    <div className="page-stack content-narrow">
+      <Link
+        href="/reports"
+        className="inline-flex items-center gap-1 self-start text-sm font-semibold text-muted-foreground"
+      >
         <ChevronLeft className="size-4" aria-hidden />
         History
       </Link>

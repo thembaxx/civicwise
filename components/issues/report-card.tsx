@@ -9,15 +9,19 @@ export function ReportCard({ report }: { report: Report }) {
     <li>
       <Link
         href={`/issues/${report.id}`}
-        className="flex gap-3 rounded-xl border border-border bg-card p-3.5 transition-colors hover:border-primary/50"
+        className="flex gap-4 rounded-2xl border border-border bg-card p-5 transition-colors hover:border-positive/50"
       >
         <CategoryBadge category={report.category} />
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="text-pretty text-sm font-semibold leading-snug">{report.title}</h3>
-            <span className="shrink-0 text-right font-heading text-lg font-bold leading-none tabular-nums">
+            <h3 className="text-pretty text-sm font-semibold leading-snug">
+              {report.title}
+            </h3>
+            <span className="shrink-0 text-right font-sans text-xl font-medium leading-none tabular-nums">
               {days}
-              <span className="block text-[11px] font-medium text-muted-foreground">days</span>
+              <span className="block text-[11px] font-medium text-muted-foreground">
+                days
+              </span>
             </span>
           </div>
           <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
@@ -34,9 +38,13 @@ export function ReportCard({ report }: { report: Report }) {
               {report.confirmations}
               <span className="sr-only">confirmations</span>
             </span>
-            <span className="text-xs text-muted-foreground">{CATEGORY_LABEL[report.category]}</span>
+            <span className="text-xs text-muted-foreground">
+              {CATEGORY_LABEL[report.category]}
+            </span>
             {report.sample ? (
-              <span className="rounded border border-border px-1.5 text-[11px] text-muted-foreground">Sample</span>
+              <span className="rounded border border-border px-1.5 text-[11px] text-muted-foreground">
+                Sample
+              </span>
             ) : null}
           </div>
         </div>

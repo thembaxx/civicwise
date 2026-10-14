@@ -1,3 +1,4 @@
+import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr'
 import { cn } from '@/lib/utils'
 
 export function Section({
@@ -6,19 +7,47 @@ export function Section({
   children,
   className,
   description,
+  eyebrow,
+  icon,
+  variant = 'paper',
+  id,
 }: {
   title: string
-  description?: string
   action?: React.ReactNode
   children: React.ReactNode
   className?: string
+  description?: string
+  eyebrow?: string
+  icon?: React.ReactNode
+  variant?: 'paper' | 'stone' | 'plain'
+  id?: string
 }) {
   return (
-    <section className={cn('flex flex-col gap-4 rounded-2xl border border-border bg-card p-4', className)}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex flex-col gap-0.5">
-          <h2 className="text-base font-bold tracking-tight">{title}</h2>
-          {description && <p className="text-xs leading-relaxed text-muted-foreground">{description}</p>}
+    <section
+      id={id}
+      className={cn(
+        'panel flex min-w-0 flex-col gap-6',
+        variant === 'paper' && 'border border-border bg-card p-6 sm:p-8',
+        variant === 'stone' && 'bg-muted/70 p-6 sm:p-7',
+        className,
+      )}
+    >
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-col gap-2">
+          {eyebrow && (
+            <p className="eyebrow text-muted-foreground">{eyebrow}</p>
+          )}
+          <div className="flex items-center gap-2.5">
+            {icon && <span className="text-positive">{icon}</span>}
+            <h2 className="editorial-title text-[27px] sm:text-[30px]">
+              {title}
+            </h2>
+          </div>
+          {description && (
+            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
+              {description}
+            </p>
+          )}
         </div>
         {action}
       </div>
@@ -29,27 +58,32 @@ export function Section({
 
 export function SourceNote() {
   return (
-    <p className="text-xs leading-relaxed text-muted-foreground">
-      {'Financial data: '}
+    <p className="flex flex-wrap items-center gap-x-1 text-sm leading-relaxed text-muted-foreground">
+      Source:{' '}
       <a
         href="https://municipalmoney.gov.za"
         target="_blank"
         rel="noreferrer"
-        className="underline underline-offset-2"
+        className="inline-flex items-center gap-1 font-medium underline underline-offset-4"
       >
-        National Treasury Municipal Money
+        National Treasury · Municipal Money{' '}
+        <ArrowUpRight className="size-3.5" aria-hidden />
+        <span className="sr-only"> (opens in a new tab)</span>
       </a>
-      {', audited actuals. Reused under its open data terms.'}
+      <span>Audited actuals, reused under its open data terms.</span>
     </p>
   )
 }
 
 export function SectionSkeleton({ rows = 3 }: { rows?: number }) {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4" aria-busy="true">
-      <div className="h-4 w-1/3 animate-pulse rounded bg-muted" />
+    <div
+      className="panel flex flex-col gap-4 border border-border bg-card p-6 sm:p-8"
+      aria-busy="true"
+    >
+      <div className="h-7 w-2/3 animate-pulse rounded-xl bg-muted" />
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="h-8 animate-pulse rounded bg-muted" />
+        <div key={i} className="h-10 animate-pulse rounded-xl bg-muted" />
       ))}
       <span className="sr-only">Loading Treasury data</span>
     </div>

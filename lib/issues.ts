@@ -22,7 +22,8 @@ export type EventType =
 
 export const EVENT_LABELS: Record<EventType, string> = {
   logged: 'Logged on Tracker',
-  reported_to_municipality: 'Resident says they reported it to the municipality',
+  reported_to_municipality:
+    'Resident says they reported it to the municipality',
   municipal_reference_added: 'Municipal reference number recorded',
   community_confirmed: 'Neighbour confirmed the problem',
   still_unresolved: 'Checked: still unresolved',
@@ -58,6 +59,7 @@ export type Issue = {
   confirmations: number
   confirmedByMe: boolean
   isMine: boolean
+  sample?: boolean
   events: IssueEvent[]
 }
 

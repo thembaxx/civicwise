@@ -1,6 +1,6 @@
-# Civic Ledger
+# Civicwise
 
-Civic Ledger is an independent South African civic utility. It helps residents understand municipal finances, find their IEC ward, and maintain a timestamped history of user-submitted service issues.
+Civicwise is an independent South African civic utility. It helps residents understand municipal finances, find their IEC ward, and maintain a timestamped history of user-submitted service issues.
 
 ## Product truth
 - Municipal finance data comes from the National Treasury Municipal Money API and is presented with source context.

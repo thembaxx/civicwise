@@ -2,16 +2,25 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Crosshair as LocateFixed } from '@phosphor-icons/react'
+import {
+  Crosshair as LocateFixed,
+  ArrowUpRight,
+  CircleNotch,
+} from '@phosphor-icons/react'
 import { CATEGORIES, type Category, type Issue } from '@/lib/issues'
 import type { Municipality } from '@/lib/municipal-money'
 import { cn } from '@/lib/utils'
 import { CATEGORY_ICONS } from './issue-meta'
 
-const fieldClass =
-  'w-full rounded-xl border border-input bg-card px-3 py-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring'
+const fieldClass = 'field'
 
-export function ReportForm({ municipalities, defaultCode }: { municipalities: Municipality[]; defaultCode: string }) {
+export function ReportForm({
+  municipalities,
+  defaultCode,
+}: {
+  municipalities: Municipality[]
+  defaultCode: string
+}) {
   const router = useRouter()
   const [category, setCategory] = useState<Category>('pothole')
   const [code, setCode] = useState(defaultCode)
@@ -22,14 +31,27 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
   const [submitting, setSubmitting] = useState(false)
 
   function useMyLocation() {
-    if (!navigator.geolocation) return
+    if (!navigator.geolocation) {
+      setError(
+        'Location is not supported on this device. Enter an address or landmark instead.',
+      )
+      return
+    }
+    setError(null)
     setLocating(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setLocation(`GPS ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`)
+        setLocation(
+          `GPS ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`,
+        )
         setLocating(false)
       },
-      () => setLocating(false),
+      () => {
+        setLocating(false)
+        setError(
+          'Your location could not be read. Enter an address or landmark instead.',
+        )
+      },
       { enableHighAccuracy: true, timeout: 10_000 },
     )
   }
@@ -40,48 +62,61 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
     setSubmitting(true)
     const form = new FormData(e.currentTarget)
     const municipality = municipalities.find((m) => m.code === code)
-    const res = await fetch('/api/issues', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        category,
-        municipalityCode: code,
-        municipalityName: municipality?.name,
-        title: form.get('title'),
-        location,
-        ward: form.get('ward'),
-        description: form.get('description'),
-      }),
-    })
-    const body = await res.json()
-    if (!res.ok) {
-      setError(body.error ?? 'Could not save this report')
-      setSubmitting(false)
-      return
-    }
-    const issue = body as Issue
-    if (alreadyReported) {
-      const reference = String(form.get('reference') ?? '').trim()
-      await fetch(`/api/issues/${issue.id}`, {
+    try {
+      const res = await fetch('/api/issues', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'reported_to_municipality' }),
+        body: JSON.stringify({
+          category,
+          municipalityCode: code,
+          municipalityName: municipality?.name,
+          title: form.get('title'),
+          location,
+          ward: form.get('ward'),
+          description: form.get('description'),
+        }),
       })
-      if (reference) {
+      const body = await res.json()
+      if (!res.ok) {
+        setError(body.error ?? 'Could not save this report')
+        setSubmitting(false)
+        return
+      }
+      const issue = body as Issue
+      if (alreadyReported) {
+        const reference = String(form.get('reference') ?? '').trim()
         await fetch(`/api/issues/${issue.id}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'municipal_reference', reference }),
+          body: JSON.stringify({ type: 'reported_to_municipality' }),
         })
+        if (reference) {
+          await fetch(`/api/issues/${issue.id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'municipal_reference', reference }),
+          })
+        }
       }
+      router.push(`/reports/${issue.id}`)
+    } catch {
+      setError(
+        'Your report could not be saved. Please check your connection and try again.',
+      )
+      setSubmitting(false)
     }
-    router.push(`/reports/${issue.id}`)
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-6">
+    <form
+      onSubmit={onSubmit}
+      className="panel flex min-w-0 flex-col gap-6 border border-border bg-card p-5 sm:p-8"
+      aria-busy={submitting}
+    >
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-3 text-sm font-semibold">What&apos;s the problem?</legend>
+        <legend className="mb-3 text-sm font-semibold">
+          What&apos;s the problem?
+        </legend>
         <div className="grid grid-cols-2 gap-2">
           {(Object.keys(CATEGORIES) as Category[]).map((key) => {
             const Icon = CATEGORY_ICONS[key]
@@ -90,8 +125,10 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
               <label
                 key={key}
                 className={cn(
-                  'flex cursor-pointer flex-col gap-2 rounded-xl border p-3 transition-colors has-focus-visible:ring-2 has-focus-visible:ring-ring',
-                  selected ? 'border-secondary bg-secondary text-secondary-foreground' : 'border-border bg-card',
+                  'flex cursor-pointer flex-col gap-3 rounded-xl border p-4 transition-colors has-focus-visible:ring-2 has-focus-visible:ring-ring',
+                  selected
+                    ? 'border-[#8fb824] bg-primary text-primary-foreground'
+                    : 'border-border bg-background/50 hover:bg-muted',
                 )}
               >
                 <input
@@ -102,10 +139,17 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
                   onChange={() => setCategory(key)}
                   className="sr-only"
                 />
-                <Icon className={cn('size-5', selected && 'text-primary')} aria-hidden />
+                <Icon className="size-6" aria-hidden />
                 <span className="flex flex-col">
-                  <span className="text-sm font-semibold">{CATEGORIES[key].label}</span>
-                  <span className={cn('text-xs', selected ? 'opacity-75' : 'text-muted-foreground')}>
+                  <span className="text-sm font-semibold">
+                    {CATEGORIES[key].label}
+                  </span>
+                  <span
+                    className={cn(
+                      'text-xs leading-relaxed',
+                      selected ? 'text-[#42482f]' : 'text-muted-foreground',
+                    )}
+                  >
                     {CATEGORIES[key].hint}
                   </span>
                 </span>
@@ -119,20 +163,40 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
         <label htmlFor="municipality" className="text-sm font-semibold">
           Municipality
         </label>
-        <select id="municipality" value={code} onChange={(e) => setCode(e.target.value)} className={fieldClass}>
+        <select
+          id="municipality"
+          value={code}
+          disabled={!municipalities.length}
+          onChange={(e) => setCode(e.target.value)}
+          className={fieldClass}
+        >
           {municipalities.map((m) => (
             <option key={m.code} value={m.code}>
               {m.name}
             </option>
           ))}
         </select>
+        {!municipalities.length && (
+          <p role="status" className="text-sm text-destructive">
+            The municipality list is temporarily unavailable. Please try again
+            shortly.
+          </p>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
         <label htmlFor="title" className="text-sm font-semibold">
           Short title
         </label>
-        <input id="title" name="title" required minLength={4} maxLength={90} placeholder="e.g. Streetlight out outside no. 14" className={fieldClass} />
+        <input
+          id="title"
+          name="title"
+          required
+          minLength={4}
+          maxLength={90}
+          placeholder="e.g. Streetlight out outside no. 14"
+          className={fieldClass}
+        />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -143,7 +207,8 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
           <button
             type="button"
             onClick={useMyLocation}
-            className="inline-flex items-center gap-1 text-xs font-semibold underline underline-offset-2"
+            disabled={locating}
+            className="text-link min-h-9 disabled:opacity-60"
           >
             <LocateFixed className="size-3.5" aria-hidden />
             {locating ? 'Locating…' : 'Use my location'}
@@ -167,10 +232,26 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
           <label htmlFor="ward" className="text-sm font-semibold">
             Ward
           </label>
-          <input id="ward" name="ward" inputMode="numeric" maxLength={6} placeholder="Optional" className={fieldClass} />
+          <input
+            id="ward"
+            name="ward"
+            inputMode="numeric"
+            maxLength={6}
+            placeholder="Optional"
+            className={fieldClass}
+          />
         </div>
         <p className="col-span-2 self-end pb-1 text-xs leading-relaxed text-muted-foreground">
-          Ward lookup from IEC boundaries is coming. Linking a ward lets councillors see it.
+          Not sure? Use{' '}
+          <a
+            href="/ward"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium underline underline-offset-4"
+          >
+            ward lookup<span className="sr-only"> (opens in a new tab)</span>
+          </a>{' '}
+          to find the IEC boundary around you.
         </p>
       </div>
 
@@ -188,7 +269,7 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
         />
       </div>
 
-      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3">
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-background p-4">
         <label className="flex items-start gap-3 text-sm">
           <input
             type="checkbox"
@@ -197,14 +278,23 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
             className="mt-0.5 size-4 accent-current"
           />
           <span className="flex flex-col gap-0.5">
-            <span className="font-semibold">I&apos;ve also reported this to the municipality</span>
+            <span className="font-semibold">
+              I&apos;ve also reported this to the municipality
+            </span>
             <span className="text-xs leading-relaxed text-muted-foreground">
-              Add the reference number they gave you. It is the only proof we record that they received it.
+              Add the reference number they gave you. It is the only proof we
+              record that they received it.
             </span>
           </span>
         </label>
         {alreadyReported && (
-          <input name="reference" maxLength={40} placeholder="Municipal reference number" aria-label="Municipal reference number" className={fieldClass} />
+          <input
+            name="reference"
+            maxLength={40}
+            placeholder="Municipal reference number"
+            aria-label="Municipal reference number"
+            className={fieldClass}
+          />
         )}
       </div>
 
@@ -216,9 +306,14 @@ export function ReportForm({ municipalities, defaultCode }: { municipalities: Mu
 
       <button
         type="submit"
-        disabled={submitting}
-        className="h-12 rounded-xl bg-primary text-base font-bold text-primary-foreground transition-opacity disabled:opacity-60"
+        disabled={submitting || !municipalities.length}
+        className="button-primary min-h-13 text-base"
       >
+        {submitting ? (
+          <CircleNotch className="size-5 animate-spin" aria-hidden />
+        ) : (
+          <ArrowUpRight className="size-5" aria-hidden />
+        )}
         {submitting ? 'Saving…' : 'Log with timestamp'}
       </button>
     </form>

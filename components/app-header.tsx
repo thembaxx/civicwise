@@ -1,27 +1,82 @@
 import Link from 'next/link'
-import { MapPinLine } from '@phosphor-icons/react/dist/ssr/MapPinLine'
+import { Suspense } from 'react'
+import {
+  MapPinLine,
+  ClockCounterClockwise,
+  UserCircle,
+  ArrowUpRight,
+} from '@phosphor-icons/react/dist/ssr'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { MunicipalityPicker } from '@/components/municipality-picker'
+import { getMunicipalities } from '@/lib/municipal-money'
 
-export function AppHeader() {
+export function AppHeader({ followedCode }: { followedCode: string }) {
   return (
-    <header className="flex items-center justify-between px-4 py-4 md:px-6">
-      <Link href="/" className="group flex items-center gap-2.5" aria-label="Civic Ledger home">
-        <span aria-hidden className="brand-mark flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-primary shadow-sm">
-          <MapPinLine weight="fill" className="size-5 transition-transform duration-300 group-hover:-translate-y-0.5" />
-        </span>
-        <span className="flex flex-col leading-none">
-          <span className="font-heading text-[15px] font-extrabold tracking-tight">Civic Ledger</span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            Your municipality, clearly
+    <header className="border-b border-border">
+      <div className="site-width flex flex-wrap items-center gap-x-6 gap-y-4 py-5 lg:flex-nowrap lg:py-6">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-2.5"
+          aria-label="Civicwise home"
+        >
+          <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <MapPinLine className="size-6" aria-hidden />
           </span>
-        </span>
-      </Link>
-      <div className="flex items-center gap-2">
-        <ThemeToggle />
-        <Link href="/plans" className="rounded-full bg-primary px-3 py-2 text-xs font-bold text-primary-foreground transition-transform hover:-translate-y-0.5">
-          Plus R39
+          <span className="text-[25px] font-semibold tracking-[-.055em]">
+            Civicwise<span className="text-positive">.</span>
+          </span>
         </Link>
+        <div className="order-3 min-w-0 w-full lg:order-none lg:mr-auto lg:max-w-[265px]">
+          <Suspense
+            fallback={
+              <Link
+                href="/m"
+                className="flex h-11 items-center rounded-xl border border-border bg-card px-4 text-sm text-muted-foreground"
+              >
+                Choose your municipality
+              </Link>
+            }
+          >
+            <HeaderMunicipality followedCode={followedCode} />
+          </Suspense>
+        </div>
+        <nav
+          aria-label="Header"
+          className="ml-auto flex shrink-0 items-center gap-3 lg:ml-0 xl:gap-5"
+        >
+          <Link
+            href={`/m/${followedCode}`}
+            className="text-link hidden lg:inline-flex"
+          >
+            Finances
+          </Link>
+          <Link href="/ward" className="text-link hidden xl:inline-flex">
+            Find your ward
+          </Link>
+          <Link href="/reports" className="text-link hidden sm:inline-flex">
+            <ClockCounterClockwise className="size-[18px]" aria-hidden />{' '}
+            History
+          </Link>
+          <Link href="/account" className="text-link">
+            <UserCircle className="size-5" aria-hidden />
+            <span className="hidden sm:inline">Account</span>
+            <span className="sr-only sm:hidden">Account</span>
+          </Link>
+          <ThemeToggle />
+          <Link
+            href="/report"
+            className="button-primary hidden whitespace-nowrap lg:inline-flex"
+          >
+            Report a problem{' '}
+            <ArrowUpRight className="size-[18px]" aria-hidden />
+          </Link>
+        </nav>
       </div>
     </header>
   )
+}
+
+async function HeaderMunicipality({ followedCode }: { followedCode: string }) {
+  const municipalities = await getMunicipalities()
+  return <MunicipalityPicker options={municipalities} current={followedCode} />
 }

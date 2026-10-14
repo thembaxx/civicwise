@@ -23,7 +23,9 @@ export function ReportForm({
   const router = useRouter()
   const { mutate } = useSWRConfig()
   const [category, setCategory] = useState<Category>('pothole')
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    null,
+  )
   const [locating, setLocating] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
@@ -43,7 +45,8 @@ export function ReportForm({
     }
     setPhotoError('')
     const reader = new FileReader()
-    reader.onload = () => setPhotoUrl(typeof reader.result === 'string' ? reader.result : null)
+    reader.onload = () =>
+      setPhotoUrl(typeof reader.result === 'string' ? reader.result : null)
     reader.onerror = () => setPhotoError('This photo could not be attached.')
     reader.readAsDataURL(file)
   }
@@ -53,7 +56,10 @@ export function ReportForm({
     setLocating(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setCoords({ lat: +pos.coords.latitude.toFixed(5), lng: +pos.coords.longitude.toFixed(5) })
+        setCoords({
+          lat: +pos.coords.latitude.toFixed(5),
+          lng: +pos.coords.longitude.toFixed(5),
+        })
         setLocating(false)
       },
       () => setLocating(false),
@@ -82,7 +88,9 @@ export function ReportForm({
     })
     const json = await res.json().catch(() => ({}))
     if (!res.ok) {
-      setErrors(json.errors ?? { form: 'Something went wrong. Please try again.' })
+      setErrors(
+        json.errors ?? { form: 'Something went wrong. Please try again.' },
+      )
       setSubmitting(false)
       return
     }
@@ -93,7 +101,9 @@ export function ReportForm({
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
       <fieldset>
-        <legend className="mb-2 text-sm font-semibold">What&apos;s the problem?</legend>
+        <legend className="mb-2 text-sm font-semibold">
+          What&apos;s the problem?
+        </legend>
         <div className="grid grid-cols-3 gap-2">
           {CATEGORIES.map((c) => {
             const Icon = CATEGORY_ICON[c]
@@ -103,7 +113,9 @@ export function ReportForm({
                 key={c}
                 className={cn(
                   'flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border-2 px-1 py-3 text-center text-xs font-semibold leading-tight transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ring',
-                  selected ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-card',
+                  selected
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-border bg-card',
                 )}
               >
                 <input
@@ -123,7 +135,14 @@ export function ReportForm({
       </fieldset>
 
       <Field label="Short title" id="title" error={errors.title}>
-        <input id="title" name="title" required maxLength={80} placeholder="e.g. Deep pothole in left lane" className={inputClass} />
+        <input
+          id="title"
+          name="title"
+          required
+          maxLength={80}
+          placeholder="e.g. Deep pothole in left lane"
+          className={inputClass}
+        />
       </Field>
 
       <Field label="Where is it?" id="location" error={errors.location}>
@@ -157,7 +176,14 @@ export function ReportForm({
       </Field>
 
       <Field label="Ward (optional)" id="ward">
-        <input id="ward" name="ward" inputMode="numeric" maxLength={10} placeholder="e.g. 57" className={inputClass} />
+        <input
+          id="ward"
+          name="ward"
+          inputMode="numeric"
+          maxLength={10}
+          placeholder="e.g. 57"
+          className={inputClass}
+        />
       </Field>
 
       <Field label="Photo (optional)" id="photo">
@@ -173,10 +199,17 @@ export function ReportForm({
         />
         {photoUrl ? (
           <div className="relative overflow-hidden rounded-2xl border border-border bg-card">
-            <img src={photoUrl} alt="Attached issue photo preview" className="max-h-64 w-full object-cover" />
+            <img
+              src={photoUrl}
+              alt="Attached issue photo preview"
+              className="max-h-64 w-full object-cover"
+            />
             <button
               type="button"
-              onClick={() => { setPhotoUrl(null); if (photoInputRef.current) photoInputRef.current.value = '' }}
+              onClick={() => {
+                setPhotoUrl(null)
+                if (photoInputRef.current) photoInputRef.current.value = ''
+              }}
               className="absolute right-2 top-2 inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur transition-transform active:scale-95"
               aria-label="Remove attached photo"
             >
@@ -189,11 +222,15 @@ export function ReportForm({
             onClick={() => photoInputRef.current?.click()}
             className="flex min-h-24 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted active:scale-[.99]"
           >
-            <Camera className="size-5 text-primary" aria-hidden="true" />
+            <Camera className="size-5 text-positive" aria-hidden="true" />
             Take a photo or choose from library
           </button>
         )}
-        {photoError ? <p className="text-sm font-medium text-destructive" role="alert">{photoError}</p> : null}
+        {photoError ? (
+          <p className="text-sm font-medium text-destructive" role="alert">
+            {photoError}
+          </p>
+        ) : null}
       </Field>
 
       <Field label="Details (optional)" id="description">
@@ -210,19 +247,25 @@ export function ReportForm({
       <aside className="flex gap-3 rounded-xl bg-accent/40 p-3.5 text-sm leading-relaxed">
         <Info className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
         <p>
-          This creates your own timestamped record. It does <strong>not</strong> open a ticket with {municipalityName}.
-          Report it to them too{phone ? ` (${phone})` : ''}, then add their reference number to link the two.
+          This creates your own timestamped record. It does <strong>not</strong>{' '}
+          open a ticket with {municipalityName}. Report it to them too
+          {phone ? ` (${phone})` : ''}, then add their reference number to link
+          the two.
         </p>
       </aside>
 
-      {errors.form ? <p className="text-sm font-medium text-destructive">{errors.form}</p> : null}
+      {errors.form ? (
+        <p className="text-sm font-medium text-destructive">{errors.form}</p>
+      ) : null}
 
       <button
         type="submit"
         disabled={submitting}
-        className="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary font-heading text-base font-bold text-primary-foreground disabled:opacity-70"
+        className="button-primary min-h-12 text-base disabled:opacity-70"
       >
-        {submitting ? <Spinner className="size-5 animate-spin" aria-hidden="true" /> : null}
+        {submitting ? (
+          <Spinner className="size-5 animate-spin" aria-hidden="true" />
+        ) : null}
         Log &amp; timestamp report
       </button>
     </form>

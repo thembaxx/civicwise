@@ -28,15 +28,18 @@ export function IssuesList({ code }: { code: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1" role="tablist" aria-label="Filter reports">
+      <div
+        className="flex flex-wrap gap-2"
+        role="group"
+        aria-label="Filter reports"
+      >
         {FILTERS.map((f) => (
           <button
             key={f.id}
-            role="tab"
-            aria-selected={filter === f.id}
+            aria-pressed={filter === f.id}
             onClick={() => setFilter(f.id)}
             className={cn(
-              'shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
+              'min-h-11 shrink-0 rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
               filter === f.id
                 ? 'border-primary bg-primary text-primary-foreground'
                 : 'border-border bg-card text-muted-foreground hover:text-foreground',
@@ -54,13 +57,19 @@ export function IssuesList({ code }: { code: string }) {
       ) : isLoading ? (
         <ul className="flex flex-col gap-3" aria-busy="true">
           {[0, 1, 2].map((i) => (
-            <li key={i} className="h-24 animate-pulse rounded-xl bg-secondary" />
+            <li
+              key={i}
+              className="h-24 animate-pulse rounded-xl bg-secondary"
+            />
           ))}
         </ul>
       ) : visible.length === 0 ? (
         <div className="flex flex-col items-start gap-3 rounded-xl border border-dashed border-border p-5">
           <p className="text-sm text-muted-foreground">Nothing here yet.</p>
-          <Link href="/report" className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground">
+          <Link
+            href="/report"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
+          >
             Log an issue
           </Link>
         </div>

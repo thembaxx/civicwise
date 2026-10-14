@@ -1,10 +1,14 @@
 import type { Metadata } from 'next'
-import { Check, DownloadSimple as Download } from '@phosphor-icons/react/dist/ssr'
+import {
+  Check,
+  DownloadSimple as Download,
+} from '@phosphor-icons/react/dist/ssr'
 import { getMunicipalityProfile } from '@/lib/municipal-money'
 import { getFollowedCode } from '@/lib/session'
 import { cn } from '@/lib/utils'
+import { PageIntro } from '@/components/page-intro'
 
-export const metadata: Metadata = { title: 'Account & plans · Municipal Accountability Tracker' }
+export const metadata: Metadata = { title: 'Account & plans' }
 
 const PLANS = [
   {
@@ -38,8 +42,12 @@ export default async function AccountPage() {
   const profile = await getMunicipalityProfile(code)
 
   return (
-    <div className="flex flex-col gap-5 pt-2">
-      <h1 className="font-heading text-3xl font-extrabold tracking-tight">Account</h1>
+    <div className="page-stack content-narrow">
+      <PageIntro
+        title="Your Civicwise"
+        eyebrow="INDEPENDENT BY DESIGN"
+        description="Your records, your municipality, and a little more clarity."
+      />
 
       <section aria-labelledby="plans-heading" className="flex flex-col gap-3">
         <h2 id="plans-heading" className="sr-only">
@@ -50,13 +58,13 @@ export default async function AccountPage() {
             <article
               key={plan.name}
               className={cn(
-                'flex flex-col gap-4 rounded-xl p-4',
-                plan.current ? 'border border-border bg-card' : 'bg-primary text-primary-foreground',
+                'panel flex flex-col gap-5 border border-border p-6',
+                plan.current ? 'bg-card' : 'bg-muted/60',
               )}
             >
               <div className="flex items-baseline justify-between">
-                <h3 className="font-heading text-xl font-bold">{plan.name}</h3>
-                <p className="font-heading text-2xl font-extrabold tabular-nums">
+                <h3 className="editorial-title text-2xl">{plan.name}</h3>
+                <p className="font-sans text-3xl font-medium tabular-nums">
                   {plan.price}
                   <span className="text-sm font-medium opacity-75">/month</span>
                 </p>
@@ -64,18 +72,20 @@ export default async function AccountPage() {
               <ul className="flex flex-col gap-2 text-sm">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-start gap-2">
-                    <Check className={cn('mt-0.5 size-4 shrink-0', plan.current ? 'text-primary' : 'text-accent')} aria-hidden="true" />
+                    <Check
+                      className="mt-0.5 size-4 shrink-0 text-positive"
+                      aria-hidden="true"
+                    />
                     {f}
                   </li>
                 ))}
               </ul>
               {plan.current ? (
-                <p className="rounded-lg bg-secondary py-2.5 text-center text-sm font-semibold">Your current plan</p>
+                <p className="rounded-xl bg-positive-soft py-3 text-center text-sm font-semibold text-positive">
+                  Your current plan
+                </p>
               ) : (
-                <button
-                  disabled
-                  className="rounded-lg bg-accent py-2.5 text-sm font-bold text-accent-foreground disabled:cursor-not-allowed"
-                >
+                <button disabled className="button-outline disabled:opacity-60">
                   Plus launches soon
                 </button>
               )}
@@ -84,39 +94,52 @@ export default async function AccountPage() {
         </div>
       </section>
 
-      <section aria-labelledby="export-heading" className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+      <section
+        aria-labelledby="export-heading"
+        className="panel flex flex-col gap-4 border border-border bg-card p-6"
+      >
         <h2 id="export-heading" className="text-base font-bold">
           Your portable history
         </h2>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Download every report for {profile?.name ?? code}, including timestamps, confirmations and municipal reference
-          numbers. Useful for ward councillor meetings, ombud complaints or media.
+          Download every report for {profile?.name ?? code}, including
+          timestamps, confirmations and municipal reference numbers. Useful for
+          ward councillor meetings, ombud complaints or media.
         </p>
         <a
           href={`/api/reports/export?m=${code}`}
-          className="flex items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground"
+          className="button-primary self-start"
         >
           <Download className="size-4" aria-hidden="true" /> Download CSV
         </a>
       </section>
 
-      <section aria-labelledby="inst-heading" className="rounded-xl border border-dashed border-border p-4">
+      <section
+        aria-labelledby="inst-heading"
+        className="panel border border-dashed border-border p-6"
+      >
         <h2 id="inst-heading" className="text-base font-bold">
           For councillors, newsrooms &amp; NGOs
         </h2>
         <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-          Institutional dashboards with ward-level aggregation and API access are on the roadmap.
+          Institutional dashboards with ward-level aggregation and API access
+          are on the roadmap.
         </p>
       </section>
 
-      <section aria-labelledby="about-heading" className="text-xs leading-relaxed text-muted-foreground">
+      <section
+        aria-labelledby="about-heading"
+        className="text-sm leading-relaxed text-muted-foreground"
+      >
         <h2 id="about-heading" className="mb-1 font-semibold text-foreground">
           About the data
         </h2>
         <p>
-          Financial and audit data from National Treasury&apos;s Municipal Money API, reused free of charge under its
-          terms. Ward boundaries from the IEC. Issue reports are submitted by residents; MAT is independent and cannot
-          confirm whether a municipality received or resolved a report.
+          Financial and audit data from National Treasury&apos;s Municipal Money
+          API, reused free of charge under its terms. Ward boundaries from the
+          IEC. Issue reports are submitted by residents; Civicwise is
+          independent and cannot confirm whether a municipality received or
+          resolved a report.
         </p>
       </section>
     </div>
