@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPin, Users } from 'lucide-react'
+import { MapPin, Users } from '@phosphor-icons/react'
 import { CategoryBadge, StatusPill } from '@/components/issue-meta'
 import { CATEGORY_LABEL, daysOpen, type Report } from '@/lib/reports'
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Download } from 'lucide-react'
+import { DownloadSimple as Download } from '@phosphor-icons/react'
 import { ReportCard } from './report-card'
 import { useReports } from '@/lib/use-reports'
 import { cn } from '@/lib/utils'

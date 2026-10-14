@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { ExternalLink, Phone } from 'lucide-react'
+import { ArrowSquareOut as ExternalLink, Phone } from '@phosphor-icons/react'
 import { Section, SectionSkeleton, SourceNote } from '@/components/section'
 import { FollowButton } from '@/components/municipality/follow-button'
 import { IssueList } from '@/components/issues/issue-list'

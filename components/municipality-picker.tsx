@@ -1,7 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
-import { ChevronDown, Loader2 } from 'lucide-react'
+import { CaretDown as ChevronDown, Spinner } from '@phosphor-icons/react'
 import { followMunicipality } from '@/app/actions'
 
 type Option = { code: string; name: string; province: string; category: string }
@@ -51,7 +51,7 @@ export function MunicipalityPicker({ options, current }: { options: Option[]; cu
         )}
       </select>
       {pending ? (
-        <Loader2 className="pointer-events-none absolute right-3 top-3 size-4 animate-spin text-muted-foreground" aria-label="Loading" />
+        <Spinner className="pointer-events-none absolute right-3 top-3 size-4 animate-spin text-muted-foreground" aria-label="Loading" />
       ) : (
         <ChevronDown className="pointer-events-none absolute right-3 top-3 size-4 text-muted-foreground" aria-hidden="true" />
       )}

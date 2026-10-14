@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ChevronLeft } from 'lucide-react'
+import { CaretLeft as ChevronLeft } from '@phosphor-icons/react'
 import { IssueDetail } from '@/components/issues/issue-detail'
 import { HonestyNote } from '@/components/issues/honesty-note'
 import { getIssue } from '@/lib/issues-store'

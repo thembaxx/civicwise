@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import useSWR from 'swr'
-import { BellRing, CheckCheck, Hash, MapPin, RotateCcw, ThumbsUp } from 'lucide-react'
+import { BellRinging as BellRing, Checks as CheckCheck, Hash, MapPin, ArrowClockwise as RotateCcw, ThumbsUp } from '@phosphor-icons/react'
 import { CATEGORIES, EVENT_LABELS, type Issue, type IssueAction } from '@/lib/issues'
 import { daysSince, formatDate, formatDateTime } from '@/lib/format'
 import { cn } from '@/lib/utils'

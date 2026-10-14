@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Download } from 'lucide-react'
+import { DownloadSimple as Download } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 import { IssueList } from './issue-list'
 

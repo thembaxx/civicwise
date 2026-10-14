@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Check } from 'lucide-react'
+import { Check } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = { title: 'Plans' }

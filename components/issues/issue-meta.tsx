@@ -1,8 +1,8 @@
-import { Droplet, Lightbulb, Trash2, TrafficCone, type LucideIcon } from 'lucide-react'
+import { Drop as Droplet, Lightbulb, Trash as Trash2, TrafficCone, type Icon } from '@phosphor-icons/react'
 import type { Category, Issue } from '@/lib/issues'
 import { cn } from '@/lib/utils'
 
-export const CATEGORY_ICONS: Record<Category, LucideIcon> = {
+export const CATEGORY_ICONS: Record<Category, Icon> = {
   pothole: TrafficCone,
   streetlight: Lightbulb,
   water: Droplet,

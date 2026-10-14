@@ -1,7 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
-import { Check, Plus } from 'lucide-react'
+import { Check, Plus } from '@phosphor-icons/react'
 import { followMunicipality } from '@/app/actions'
 import { cn } from '@/lib/utils'
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, BellRing, Check, CheckCircle2, Hash, Loader2, MapPin, Users } from 'lucide-react'
+import { ArrowLeft, BellRinging as BellRing, Check, CheckCircle as CheckCircle2, Hash, Spinner, MapPin, Users } from '@phosphor-icons/react'
 import { CategoryBadge } from '@/components/issue-meta'
 import { CATEGORY_LABEL, daysOpen, formatStamp, type Report } from '@/lib/reports'
 import { postAction, useReport } from '@/lib/use-reports'
@@ -132,7 +132,7 @@ export function ReportDetail({
             disabled={report.confirmedByMe || busy !== null}
             className="flex h-12 items-center justify-center gap-2 rounded-xl bg-accent font-heading font-bold text-accent-foreground disabled:opacity-60"
           >
-            {busy === 'confirm' ? <Loader2 className="size-5 animate-spin" aria-hidden="true" /> : <Users className="size-5" aria-hidden="true" />}
+            {busy === 'confirm' ? <Spinner className="size-5 animate-spin" aria-hidden="true" /> : <Users className="size-5" aria-hidden="true" />}
             {report.confirmedByMe ? 'You confirmed this' : 'I see this too'}
           </button>
         ) : null}

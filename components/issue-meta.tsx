@@ -1,14 +1,14 @@
-import { CircleHelp, Construction, Droplets, Lightbulb, Trash2, Waves, type LucideIcon } from 'lucide-react'
+import { Question, TrafficCone as Construction, Drop as Droplets, Lightbulb, Trash as Trash2, Waves, type Icon } from '@phosphor-icons/react'
 import type { Category, Report } from '@/lib/reports'
 import { cn } from '@/lib/utils'
 
-export const CATEGORY_ICON: Record<Category, LucideIcon> = {
+export const CATEGORY_ICON: Record<Category, Icon> = {
   pothole: Construction,
   streetlight: Lightbulb,
   water: Droplets,
   sewage: Waves,
   refuse: Trash2,
-  other: CircleHelp,
+  other: Question,
 }
 
 export function CategoryBadge({ category, className }: { category: Category; className?: string }) {

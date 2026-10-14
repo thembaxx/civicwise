@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight } from '@phosphor-icons/react'
 import { Section, SectionSkeleton } from '@/components/section'
 import { IssueList } from '@/components/issues/issue-list'
 import { HonestyNote } from '@/components/issues/honesty-note'

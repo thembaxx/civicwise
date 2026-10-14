@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { LocateFixed } from 'lucide-react'
+import { Crosshair as LocateFixed } from '@phosphor-icons/react'
 import { CATEGORIES, type Category, type Issue } from '@/lib/issues'
 import type { Municipality } from '@/lib/municipal-money'
 import { cn } from '@/lib/utils'

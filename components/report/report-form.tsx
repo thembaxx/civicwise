@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSWRConfig } from 'swr'
-import { Crosshair, Info, Loader2 } from 'lucide-react'
+import { Crosshair, Info, Spinner } from '@phosphor-icons/react'
 import { CATEGORY_ICON } from '@/components/issue-meta'
 import { CATEGORIES, CATEGORY_LABEL, type Category } from '@/lib/reports'
 import { cn } from '@/lib/utils'
@@ -121,7 +121,7 @@ export function ReportForm({
             className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium"
           >
             {locating ? (
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              <Spinner className="size-4 animate-spin" aria-hidden="true" />
             ) : (
               <Crosshair className="size-4" aria-hidden="true" />
             )}
@@ -165,7 +165,7 @@ export function ReportForm({
         disabled={submitting}
         className="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary font-heading text-base font-bold text-primary-foreground disabled:opacity-70"
       >
-        {submitting ? <Loader2 className="size-5 animate-spin" aria-hidden="true" /> : null}
+        {submitting ? <Spinner className="size-5 animate-spin" aria-hidden="true" /> : null}
         Log &amp; timestamp report
       </button>
     </form>

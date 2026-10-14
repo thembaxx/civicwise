@@ -2,7 +2,7 @@
 
 import { useDeferredValue, useState } from 'react'
 import Link from 'next/link'
-import { ChevronRight, Search } from 'lucide-react'
+import { CaretRight, MagnifyingGlass as Search } from '@phosphor-icons/react'
 import type { Municipality } from '@/lib/municipal-money'
 
 const PROVINCES: Record<string, string> = {
@@ -55,7 +55,7 @@ export function MunicipalitySearch({ municipalities, followed }: { municipalitie
                   {m.code === followed && ' · Following'}
                 </span>
               </span>
-              <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
+              <CaretRight className="size-4 text-muted-foreground" aria-hidden />
             </Link>
           </li>
         ))}
