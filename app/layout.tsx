@@ -1,14 +1,14 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Archivo, Public_Sans } from 'next/font/google'
+import { DM_Sans, Manrope } from 'next/font/google'
 import { AppHeader } from '@/components/app-header'
 import { BottomNav } from '@/components/bottom-nav'
 import { PwaRegister } from '@/components/pwa-register'
 import { getFollowedCode } from '@/lib/viewer'
 import './globals.css'
 
-const archivo = Archivo({ subsets: ['latin'], variable: '--font-archivo', weight: ['500', '600', '700', '800'] })
-const publicSans = Public_Sans({ subsets: ['latin'], variable: '--font-public-sans' })
+const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope', weight: ['400', '500', '600', '700', '800'] })
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans', weight: ['400', '500', '600', '700'] })
 
 export const metadata: Metadata = {
   title: {
@@ -40,7 +40,7 @@ export default async function RootLayout({
 }>) {
   const followed = await getFollowedCode()
   return (
-    <html lang="en-ZA" className={`${archivo.variable} ${publicSans.variable} bg-background`}>
+    <html lang="en-ZA" className={`${manrope.variable} ${dmSans.variable} bg-background`}>
       <body className="antialiased">
         <PwaRegister />
         <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col md:max-w-2xl">
