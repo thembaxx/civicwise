@@ -2,7 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { House, Landmark, Plus, ScrollText, Search } from 'lucide-react'
+import { House } from '@phosphor-icons/react/dist/csr/House'
+import { Bank } from '@phosphor-icons/react/dist/csr/Bank'
+import { Plus } from '@phosphor-icons/react/dist/csr/Plus'
+import { Scroll } from '@phosphor-icons/react/dist/csr/Scroll'
+import { MagnifyingGlass } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
 import { cn } from '@/lib/utils'
 
 export function BottomNav({ followedCode }: { followedCode: string }) {
@@ -12,12 +16,12 @@ export function BottomNav({ followedCode }: { followedCode: string }) {
     {
       href: `/m/${followedCode}`,
       label: 'Finances',
-      icon: Landmark,
+      icon: Bank,
       active: pathname.startsWith('/m/'),
     },
     { href: '/report', label: 'Report', icon: Plus, active: pathname === '/report', primary: true },
-    { href: '/reports', label: 'History', icon: ScrollText, active: pathname.startsWith('/reports') },
-    { href: '/m', label: 'Find', icon: Search, active: pathname === '/m' },
+    { href: '/reports', label: 'History', icon: Scroll, active: pathname.startsWith('/reports') },
+    { href: '/m', label: 'Find', icon: MagnifyingGlass, active: pathname === '/m' },
   ]
 
   return (

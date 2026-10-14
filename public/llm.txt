@@ -1,0 +1,20 @@
+# Civic Ledger
+
+Civic Ledger is an independent South African civic utility. It helps residents understand municipal finances, find their IEC ward, and maintain a timestamped history of user-submitted service issues.
+
+## Product truth
+- Municipal finance data comes from the National Treasury Municipal Money API and is presented with source context.
+- User-submitted issue reports are portable records owned by the resident.
+- A report is not evidence that a municipality received, acknowledged, or resolved an issue unless that status is explicitly confirmed.
+- Ward boundaries are based on IEC boundary data. Ward councillor and ward budget details should be labelled with their source and freshness.
+
+## Core routes
+- `/` overview and followed municipality
+- `/m` municipality and ward lookup
+- `/m/[code]` municipality dashboard
+- `/report` create a timestamped issue report
+- `/reports` issue history
+- `/plans` paid plan information
+
+## Audience
+Residents, civic groups, journalists, and researchers in South Africa.

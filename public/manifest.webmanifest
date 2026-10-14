@@ -1,0 +1,17 @@
+{
+  "name": "Civic Ledger — Your municipality, clearly",
+  "short_name": "Civic Ledger",
+  "description": "Understand municipal money, find your ward, and keep an independent history of local service issues.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "background_color": "#eff3f1",
+  "theme_color": "#eff3f1",
+  "lang": "en-ZA",
+  "categories": ["government", "utilities", "productivity"],
+  "icons": [
+    { "src": "/icon-light-32x32.png", "sizes": "32x32", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/apple-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
