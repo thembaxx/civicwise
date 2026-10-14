@@ -1,22 +1,23 @@
 import type { Metadata } from 'next'
-import { ReportForm } from '@/components/report/report-form'
-import { getMunicipalityProfile } from '@/lib/municipal-money'
-import { getFollowedCode } from '@/lib/session'
+import { ReportForm } from '@/components/issues/report-form'
+import { HonestyNote } from '@/components/issues/honesty-note'
+import { getMunicipalities } from '@/lib/municipal-money'
+import { getFollowedCode } from '@/lib/viewer'
 
-export const metadata: Metadata = { title: 'Log an issue · Municipal Accountability Tracker' }
+export const metadata: Metadata = { title: 'Log a problem' }
 
 export default async function ReportPage() {
-  const code = await getFollowedCode()
-  const profile = await getMunicipalityProfile(code)
-  const name = profile?.name ?? code
-
+  const [municipalities, followed] = await Promise.all([getMunicipalities(), getFollowedCode()])
   return (
     <div className="flex flex-col gap-5 pt-2">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">{name}</p>
-        <h1 className="font-heading text-3xl font-extrabold tracking-tight">Log an issue</h1>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-3xl font-extrabold tracking-tight">Log a problem</h1>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Your report is timestamped and kept in your own history, whatever happens on the municipal side.
+        </p>
       </div>
-      <ReportForm code={code} municipalityName={name} phone={profile?.phone} />
+      <ReportForm municipalities={municipalities} defaultCode={followed} />
+      <HonestyNote />
     </div>
   )
 }

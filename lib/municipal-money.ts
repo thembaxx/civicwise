@@ -125,6 +125,25 @@ export async function getFinances(code: string): Promise<FinanceYear[]> {
     .sort((a, b) => a.year - b.year)
 }
 
+export type Budget = { year: number; amount: number; adjusted: boolean }
+
+/** Treasury only publishes budgets for the current year, so this is a forward-looking figure. */
+export async function getLatestBudget(code: string): Promise<Budget | null> {
+  const cut = encodeURIComponent(
+    `demarcation.code:"${code}"|amount_type.code:"ORGB";"ADJB"|period_length.length:"year"|item.code:"${EXPENDITURE}"`,
+  )
+  const drilldown = encodeURIComponent('financial_year_end.year|amount_type.code')
+  const json = await getJson<{ cells: Record<string, string | number>[] }>(
+    `/incexp_v2/aggregate?aggregates=amount.sum&cut=${cut}&drilldown=${drilldown}`,
+  )
+  if (!json?.cells.length) return null
+  const latestYear = Math.max(...json.cells.map((c) => Number(c['financial_year_end.year'])))
+  const cells = json.cells.filter((c) => Number(c['financial_year_end.year']) === latestYear)
+  const adjusted = cells.find((c) => c['amount_type.code'] === 'ADJB')
+  const chosen = adjusted ?? cells[0]
+  return { year: latestYear, amount: Number(chosen['amount.sum']), adjusted: Boolean(adjusted) }
+}
+
 export async function getAuditOpinions(code: string): Promise<AuditOpinion[]> {
   const cut = encodeURIComponent(`demarcation.code:"${code}"`)
   const json = await getJson<{ data: Record<string, string | number>[] }>(

@@ -12,7 +12,7 @@ export default async function FindPage() {
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-extrabold tracking-tight">Find your municipality</h1>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          All 257 metros and local municipalities, with audited finances from National Treasury.
+          Every metro and local municipality, with audited finances from National Treasury.
         </p>
       </div>
       <MunicipalitySearch municipalities={municipalities} followed={followed} />
