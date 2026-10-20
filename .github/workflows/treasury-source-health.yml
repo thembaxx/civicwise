@@ -1,0 +1,31 @@
+name: Treasury evidence source health
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/check-treasury-source.mjs"
+      - ".github/workflows/treasury-source-health.yml"
+  schedule:
+    - cron: "31 6 * * *"
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node scripts/check-treasury-source.mjs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: treasury-source-health
+          path: reports/treasury-source-health.json
+          retention-days: 14
+          if-no-files-found: warn
