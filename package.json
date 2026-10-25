@@ -6,7 +6,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "lint": "pnpm dlx oxlint@1.89.0 app lib tests",
+    "format": "pnpm dlx oxfmt@0.74.0 --write app lib tests",
+    "format:check": "pnpm dlx oxfmt@0.74.0 --check app lib tests",
+    "check": "pnpm run typecheck && pnpm run test && pnpm run build"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
