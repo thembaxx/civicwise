@@ -10,5 +10,5 @@ The home route composes municipal profiles, personal report history, community i
 
 ## Technology
 
-Declared in [package.json](package.json): Next.js `16.4.0` · React `^19` · TypeScript `5.7.3` · Tailwind CSS `^4.3.3`.
+Declared in [package.json](package.json): Next.js `16.4.2` · React `^19` · TypeScript `7.0.2` · Tailwind CSS `^4.3.3`.
 
