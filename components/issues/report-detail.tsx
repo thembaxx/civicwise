@@ -199,91 +199,95 @@ export function ReportDetail({
           </button>
         ) : null}
 
-        <form
-          className="flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault()
-            if (refValue.trim().length >= 3)
-              run('ref', { action: 'municipal_ref', value: refValue }).then(
-                () => setRefValue(''),
-              )
-          }}
-        >
-          <label htmlFor="muni-ref" className="sr-only">
-            Municipal reference number
-          </label>
-          <div className="relative flex-1">
-            <Hash
-              className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <input
-              id="muni-ref"
-              value={refValue}
-              onChange={(e) => setRefValue(e.target.value)}
-              placeholder={
-                report.municipalRef
-                  ? 'Update municipal ref'
-                  : 'Add municipal ref no.'
-              }
-              className="h-11 w-full rounded-lg border border-input bg-card pl-9 pr-3 text-base"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={busy !== null || refValue.trim().length < 3}
-            className="h-11 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-          >
-            Save
-          </button>
-        </form>
-
-        <div className="grid grid-cols-2 gap-2">
-          <label className="sr-only" htmlFor="remind">
-            Remind me to follow up
-          </label>
-          <div className="relative">
-            <BellRing
-              className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <select
-              id="remind"
-              defaultValue=""
-              disabled={busy !== null}
-              onChange={(e) => {
-                if (e.target.value)
-                  run('remind', {
-                    action: 'remind',
-                    days: Number(e.target.value),
-                  })
-                e.target.value = ''
+        {report.isMine && (
+          <>
+            <form
+              className="flex gap-2"
+              onSubmit={(e) => {
+                e.preventDefault()
+                if (refValue.trim().length >= 3)
+                  run('ref', { action: 'municipal_ref', value: refValue }).then(
+                    () => setRefValue(''),
+                  )
               }}
-              className="h-11 w-full appearance-none rounded-lg border border-border bg-card pl-9 pr-2 text-sm font-medium"
             >
-              <option value="" disabled>
-                {report.reminderAt
-                  ? `Reminder ${formatStamp(report.reminderAt).slice(0, 6)}`
-                  : 'Remind me'}
-              </option>
-              <option value="3">In 3 days</option>
-              <option value="7">In 7 days</option>
-              <option value="14">In 14 days</option>
-              <option value="30">In 30 days</option>
-            </select>
-          </div>
-          <button
-            onClick={() => run('resolved', { action: 'resolved' })}
-            disabled={
-              !report.isMine ||
-              Boolean(report.residentResolvedAt) ||
-              busy !== null
-            }
-            className="h-11 rounded-lg border border-border bg-card text-sm font-semibold disabled:text-muted-foreground disabled:opacity-60"
-          >
-            {report.residentResolvedAt ? 'Marked fixed' : 'Mark as fixed'}
-          </button>
-        </div>
+              <label htmlFor="muni-ref" className="sr-only">
+                Municipal reference number
+              </label>
+              <div className="relative flex-1">
+                <Hash
+                  className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <input
+                  id="muni-ref"
+                  value={refValue}
+                  onChange={(e) => setRefValue(e.target.value)}
+                  placeholder={
+                    report.municipalRef
+                      ? 'Update municipal ref'
+                      : 'Add municipal ref no.'
+                  }
+                  className="h-11 w-full rounded-lg border border-input bg-card pl-9 pr-3 text-base"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={busy !== null || refValue.trim().length < 3}
+                className="h-11 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+              >
+                Save
+              </button>
+            </form>
+
+            <div className="grid grid-cols-2 gap-2">
+              <label className="sr-only" htmlFor="remind">
+                Remind me to follow up
+              </label>
+              <div className="relative">
+                <BellRing
+                  className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <select
+                  id="remind"
+                  defaultValue=""
+                  disabled={busy !== null}
+                  onChange={(e) => {
+                    if (e.target.value)
+                      run('remind', {
+                        action: 'remind',
+                        days: Number(e.target.value),
+                      })
+                    e.target.value = ''
+                  }}
+                  className="h-11 w-full appearance-none rounded-lg border border-border bg-card pl-9 pr-2 text-sm font-medium"
+                >
+                  <option value="" disabled>
+                    {report.reminderAt
+                      ? `Reminder ${formatStamp(report.reminderAt).slice(0, 6)}`
+                      : 'Remind me'}
+                  </option>
+                  <option value="3">In 3 days</option>
+                  <option value="7">In 7 days</option>
+                  <option value="14">In 14 days</option>
+                  <option value="30">In 30 days</option>
+                </select>
+              </div>
+              <button
+                onClick={() => run('resolved', { action: 'resolved' })}
+                disabled={
+                  !report.isMine ||
+                  Boolean(report.residentResolvedAt) ||
+                  busy !== null
+                }
+                className="h-11 rounded-lg border border-border bg-card text-sm font-semibold disabled:text-muted-foreground disabled:opacity-60"
+              >
+                {report.residentResolvedAt ? 'Marked fixed' : 'Mark as fixed'}
+              </button>
+            </div>
+          </>
+        )}
       </section>
 
       <section

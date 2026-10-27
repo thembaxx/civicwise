@@ -142,23 +142,27 @@ export function IssueDetail({ initial }: { initial: Issue }) {
               primary={!issue.confirmedByMe}
             />
           )}
-          <ActionButton
-            icon={RotateCcw}
-            label="Still unresolved"
-            disabled={pending !== null}
-            onClick={() => act({ type: 'still_unresolved' })}
-          />
-          {!fixed && (
-            <ActionButton
-              icon={CheckCheck}
-              label="Looks fixed"
-              disabled={pending !== null}
-              onClick={() => act({ type: 'resident_reports_fixed' })}
-            />
+          {issue.isMine && (
+            <>
+              <ActionButton
+                icon={RotateCcw}
+                label="Still unresolved"
+                disabled={pending !== null}
+                onClick={() => act({ type: 'still_unresolved' })}
+              />
+              {!fixed && (
+                <ActionButton
+                  icon={CheckCheck}
+                  label="Looks fixed"
+                  disabled={pending !== null}
+                  onClick={() => act({ type: 'resident_reports_fixed' })}
+                />
+              )}
+            </>
           )}
         </div>
 
-        {!issue.municipalReference && (
+        {issue.isMine && !issue.municipalReference && (
           <form
             className="flex gap-2"
             onSubmit={(e) => {
@@ -194,31 +198,33 @@ export function IssueDetail({ initial }: { initial: Issue }) {
           </form>
         )}
 
-        <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5">
-          <p className="flex items-center gap-2 text-sm font-semibold">
-            <BellRing className="size-4" aria-hidden />
-            {issue.reminderAt
-              ? `Reminder on ${formatDate(issue.reminderAt)}`
-              : 'Remind me to check again'}
-          </p>
-          <div
-            className="flex gap-2"
-            role="group"
-            aria-label="Reminder interval"
-          >
-            {REMINDER_DAYS.map((d) => (
-              <button
-                key={d}
-                type="button"
-                disabled={pending !== null}
-                onClick={() => act({ type: 'reminder', days: d })}
-                className="min-h-11 flex-1 rounded-lg border border-border py-2 text-sm font-medium tabular-nums hover:bg-muted disabled:opacity-50"
-              >
-                {d}d
-              </button>
-            ))}
+        {issue.isMine && (
+          <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5">
+            <p className="flex items-center gap-2 text-sm font-semibold">
+              <BellRing className="size-4" aria-hidden />
+              {issue.reminderAt
+                ? `Reminder on ${formatDate(issue.reminderAt)}`
+                : 'Remind me to check again'}
+            </p>
+            <div
+              className="flex gap-2"
+              role="group"
+              aria-label="Reminder interval"
+            >
+              {REMINDER_DAYS.map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  disabled={pending !== null}
+                  onClick={() => act({ type: 'reminder', days: d })}
+                  className="min-h-11 flex-1 rounded-lg border border-border py-2 text-sm font-medium tabular-nums hover:bg-muted disabled:opacity-50"
+                >
+                  {d}d
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
       <section

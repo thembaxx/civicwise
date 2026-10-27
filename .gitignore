@@ -14,3 +14,10 @@ __v0_jsx-dev-runtime.ts
 node_modules
 .next/
 .DS_Store
+# Local persistence and generated types
+.data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.tsbuildinfo
+next-env.d.ts
