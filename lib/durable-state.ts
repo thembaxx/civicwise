@@ -41,9 +41,13 @@ export function resolveDatabasePath(
   const hostedProduction =
     environment.VERCEL === "1" &&
     (environment.NODE_ENV === "production" || environment.VERCEL_ENV === "production");
-  if (hostedProduction && (!configured || configured === ":memory:")) {
+  // A path on Vercel is never a durable shared SQLite volume. Even an explicit
+  // absolute path can appear to work until the next cold start, silently losing
+  // resident reports. Refuse all hosted production writes until a transactional
+  // shared database adapter is implemented.
+  if (hostedProduction) {
     throw new Error(
-      "CIVICWISE_DATABASE_PATH must identify persistent shared storage before storing reports on Vercel.",
+      "CivicWise cannot store resident reports in local SQLite on Vercel. Configure a transactional shared database adapter before enabling live reporting.",
     );
   }
   if (configured !== undefined && (!configured.trim() || configured.includes("\0"))) {
