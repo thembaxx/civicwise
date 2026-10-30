@@ -87,6 +87,7 @@ export default async function RootLayout({
         </div>
         <BottomNav followedCode={followed} />
         {process.env.NODE_ENV === 'production' && <Analytics />}
+        <a href="/vision/index.html" style={{ display: 'block', width: 'fit-content', margin: '16px auto', padding: '12px 18px', border: '1px solid currentColor', borderRadius: 999, fontSize: 14, textDecoration: 'none' }}>Try on-device vision (preview)</a>
       </body>
     </html>
   )
