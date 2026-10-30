@@ -21,7 +21,7 @@ const string = (value: unknown): value is string => typeof value === "string";
 const dated = (value: unknown): value is string =>
   string(value) && Number.isFinite(Date.parse(value));
 
-function isReportState(value: unknown): value is ReportState {
+export function isReportState(value: unknown): value is ReportState {
   if (
     !object(value) ||
     !Array.isArray(value.reports) ||
@@ -184,7 +184,7 @@ function present(r: StoredReport, visitorId: string): Report {
   };
 }
 
-export function listReports(code: string, visitorId: string) {
+export async function listReports(code: string, visitorId: string) {
   return withDurableState(
     "reports",
     initialState,
@@ -199,8 +199,8 @@ export function listReports(code: string, visitorId: string) {
   );
 }
 
-export function getReport(id: string, visitorId: string) {
-  const r = readDurableState("reports", initialState, options).reports.find(
+export async function getReport(id: string, visitorId: string) {
+  const r = (await readDurableState("reports", initialState, options)).reports.find(
     (report) => report.id === id,
   );
   return r ? present(r, visitorId) : null;
@@ -217,7 +217,7 @@ export type NewReport = {
   lng?: number;
 };
 
-export function createReport(input: NewReport, visitorId: string) {
+export async function createReport(input: NewReport, visitorId: string) {
   return withDurableState(
     "reports",
     initialState,
@@ -253,7 +253,7 @@ export type ReportAction =
   | { action: "remind"; days: number }
   | { action: "resolved" };
 
-export function applyAction(id: string, visitorId: string, payload: ReportAction) {
+export async function applyAction(id: string, visitorId: string, payload: ReportAction) {
   return withDurableState(
     "reports",
     initialState,

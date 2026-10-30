@@ -89,7 +89,7 @@ export function ReportForm({
     const json = await res.json().catch(() => ({}))
     if (!res.ok) {
       setErrors(
-        json.errors ?? { form: 'Something went wrong. Please try again.' },
+        json.errors ?? { form: json.error ?? 'Something went wrong. Please try again.' },
       )
       setSubmitting(false)
       return
