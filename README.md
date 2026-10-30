@@ -40,6 +40,7 @@ Optional database integration checks require a **disposable test PostgreSQL data
 ```sh
 TEST_DATABASE_URL=... pnpm test:postgres
 AUTH_TEST_DATABASE_URL=... node --conditions=react-server --experimental-strip-types --test tests/auth-session.integration.test.ts
+HTTP_TEST_DATABASE_URL=... pnpm test:http
 ```
 
-CI runs both database checks against an ephemeral PostgreSQL service. Live Google consent and physical-device acceptance still require configured provider credentials and operator verification.
+The HTTP check starts an isolated Next server and verifies both report families through authentication, shared storage and a server restart. Set `CIVICWISE_PLAYWRIGHT_MODULE` to an installed `@playwright/test` module path to also run its optional desktop/mobile account and report checks. CI runs the database, session and HTTP checks against an ephemeral PostgreSQL service. Live Google consent and physical-device acceptance still require configured provider credentials and operator verification.
