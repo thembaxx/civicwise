@@ -17,7 +17,7 @@ const dated = (value: unknown): value is string =>
   string(value) && Number.isFinite(Date.parse(value));
 const optionalString = (value: unknown): boolean => value === undefined || string(value);
 
-function isIssueState(value: unknown): value is IssueState {
+export function isIssueState(value: unknown): value is IssueState {
   if (!object(value) || !Array.isArray(value.issues)) return false;
   const ids = new Set<string>();
   const refs = new Set<string>();
@@ -181,23 +181,25 @@ function toPublic(issue: StoredIssue, viewerId: string): Issue {
   };
 }
 
-export function listIssues(
+export async function listIssues(
   viewerId: string,
   opts: { municipality?: string; scope?: "mine" | "all" },
 ) {
-  return readDurableState("issues", initialState, options)
-    .issues.filter((i) => (opts.municipality ? i.municipalityCode === opts.municipality : true))
+  return (await readDurableState("issues", initialState, options)).issues
+    .filter((i) => (opts.municipality ? i.municipalityCode === opts.municipality : true))
     .filter((i) => (opts.scope === "mine" ? i.ownerId === viewerId : true))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .map((i) => toPublic(i, viewerId));
 }
 
-export function getIssue(viewerId: string, id: string) {
-  const issue = readDurableState("issues", initialState, options).issues.find((i) => i.id === id);
+export async function getIssue(viewerId: string, id: string) {
+  const issue = (await readDurableState("issues", initialState, options)).issues.find(
+    (i) => i.id === id,
+  );
   return issue ? toPublic(issue, viewerId) : null;
 }
 
-export function createIssue(
+export async function createIssue(
   viewerId: string,
   input: {
     municipalityCode: string;
@@ -239,7 +241,7 @@ export function createIssue(
   );
 }
 
-export function applyAction(viewerId: string, id: string, action: IssueAction) {
+export async function applyAction(viewerId: string, id: string, action: IssueAction) {
   return withDurableState(
     "issues",
     initialState,

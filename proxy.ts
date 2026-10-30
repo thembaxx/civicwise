@@ -1,12 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { VIEWER_COOKIE, VISITOR_COOKIE, isDeviceId } from "./lib/viewer";
+import { VIEWER_COOKIE, VISITOR_COOKIE, isDeviceId } from "./lib/device-identity";
+import { getAuthConfiguration } from "./lib/account-identity";
 
 export function proxy(request: NextRequest) {
+  // The configured public origin survives a trusted TLS-terminating proxy;
+  // Next's internal request URL can use HTTP or a loopback host instead.
+  const expectedOrigin = getAuthConfiguration()?.baseURL ?? request.nextUrl.origin;
   const api = request.nextUrl.pathname === "/api" || request.nextUrl.pathname.startsWith("/api/");
   if (
     api &&
     !["GET", "HEAD", "OPTIONS"].includes(request.method) &&
-    request.headers.get("origin") !== request.nextUrl.origin
+    request.headers.get("origin") !== expectedOrigin
   ) {
     return NextResponse.json(
       { error: "This change must come from CivicWise. Reload the app and try again." },

@@ -1,18 +1,21 @@
 import "server-only";
 import { cookies } from "next/headers";
 
-export const VIEWER_COOKIE = "mat_viewer";
-export const VISITOR_COOKIE = "mat_vid";
-export const FOLLOW_COOKIE = "mat_follow";
-export const DEFAULT_MUNICIPALITY = "CPT";
-
-/** Device bearer ownership is not verified resident authentication. */
-export function isDeviceId(value: unknown): value is string {
-  return (
-    typeof value === "string" &&
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
-  );
-}
+import { headers } from "next/headers";
+import { getVerifiedAccount } from "./auth.ts";
+import {
+  VIEWER_COOKIE,
+  FOLLOW_COOKIE,
+  DEFAULT_MUNICIPALITY,
+  isDeviceId,
+} from "./device-identity.ts";
+export {
+  VIEWER_COOKIE,
+  VISITOR_COOKIE,
+  FOLLOW_COOKIE,
+  DEFAULT_MUNICIPALITY,
+  isDeviceId,
+} from "./device-identity.ts";
 
 export class MissingDeviceIdentityError extends Error {
   readonly code = "DEVICE_COOKIE_REQUIRED";
@@ -25,10 +28,12 @@ export class MissingDeviceIdentityError extends Error {
 
 /** Issue records retain mat_viewer; legacy reports separately retain mat_vid. */
 export async function getViewerId() {
+  const account = await getVerifiedAccount(await headers());
+  if (account) return account.id;
   const store = await cookies();
   const id = store.get(VIEWER_COOKIE)?.value;
-  if (!isDeviceId(id)) throw new MissingDeviceIdentityError();
-  return id;
+  // Legacy device ownership remains readable; writes require a verified account.
+  return isDeviceId(id) ? id : "";
 }
 
 export async function getFollowedCode() {

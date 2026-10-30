@@ -1,6 +1,8 @@
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import type { Pool } from "pg";
+import { getPostgresPool } from "./postgres.ts";
 
 export type StateValidator<T> = (value: unknown) => value is T;
 
@@ -41,9 +43,13 @@ export function resolveDatabasePath(
   const hostedProduction =
     environment.VERCEL === "1" &&
     (environment.NODE_ENV === "production" || environment.VERCEL_ENV === "production");
-  if (hostedProduction && (!configured || configured === ":memory:")) {
+  // A path on Vercel is never a durable shared SQLite volume. Even an explicit
+  // absolute path can appear to work until the next cold start, silently losing
+  // resident reports. Refuse all hosted production writes until a transactional
+  // shared database adapter is implemented.
+  if (hostedProduction) {
     throw new Error(
-      "CIVICWISE_DATABASE_PATH must identify persistent shared storage before storing reports on Vercel.",
+      "CivicWise cannot store resident reports in local SQLite on Vercel. Configure a transactional shared database adapter before enabling live reporting.",
     );
   }
   if (configured !== undefined && (!configured.trim() || configured.includes("\0"))) {
@@ -53,7 +59,7 @@ export function resolveDatabasePath(
   return resolve(configured ?? ".data/civicwise.sqlite");
 }
 
-function assertJson(value: unknown, seen = new Set<object>(), depth = 0): void {
+export function assertJson(value: unknown, seen = new Set<object>(), depth = 0): void {
   if (depth > 100) throw new Error("State is too deeply nested.");
   if (value === null || typeof value === "string" || typeof value === "boolean") return;
   if (typeof value === "number" && Number.isFinite(value)) return;
@@ -70,13 +76,17 @@ function assertJson(value: unknown, seen = new Set<object>(), depth = 0): void {
   seen.delete(value);
 }
 
-function encodeState<T>(value: T, validate?: StateValidator<T>): string {
+export function encodeState<T>(value: T, validate?: StateValidator<T>): string {
   assertJson(value);
   if (validate && !validate(value)) throw new Error("Updated state does not match its schema.");
   return JSON.stringify(value);
 }
 
-function decodeState<T>(namespace: string, payload: string, validate?: StateValidator<T>): T {
+export function decodeState<T>(
+  namespace: string,
+  payload: string,
+  validate?: StateValidator<T>,
+): T {
   try {
     const value: unknown = JSON.parse(payload);
     assertJson(value);
@@ -223,19 +233,121 @@ function getStore(): DurableStateStore {
   return store;
 }
 
-export function readDurableState<T>(
+export const POSTGRES_STATE_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS civicwise_state (
+    namespace TEXT PRIMARY KEY,
+    payload TEXT NOT NULL CHECK (payload::jsonb IS NOT NULL),
+    sequence BIGINT NOT NULL CHECK (sequence >= 0 AND sequence <= 9007199254740991),
+    revision BIGINT NOT NULL CHECK (revision >= 0 AND revision <= 9007199254740991)
+  );
+`;
+
+/** Row locks serialize read-modify-write operations across independent application instances. */
+export class PostgresStateStore {
+  private readonly pool: Pool;
+  constructor(pool: Pool) {
+    this.pool = pool;
+  }
+
+  async read<T>(
+    namespace: string,
+    initialize: () => T,
+    options: NamespaceOptions<T> = {},
+  ): Promise<T> {
+    return this.transaction(namespace, initialize, (state) => state, options);
+  }
+
+  async transaction<T, R>(
+    namespace: string,
+    initialize: () => T,
+    update: (state: T, transaction: StateTransaction) => R,
+    options: NamespaceOptions<T> = {},
+  ): Promise<R> {
+    if (!/^[a-z][a-z0-9._-]{0,63}$/.test(namespace)) throw new Error("Invalid state namespace.");
+    const initialSequence = options.initialSequence ?? 0;
+    if (!Number.isSafeInteger(initialSequence) || initialSequence < 0) {
+      throw new Error("Initial sequence must be a non-negative safe integer.");
+    }
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      await client.query("SET LOCAL lock_timeout = '5s'");
+      await client.query("SET LOCAL statement_timeout = '10s'");
+      const initial = encodeState(
+        demoDataEnabled() && options.sample ? options.sample() : initialize(),
+        options.validate,
+      );
+      const inserted = await client.query(
+        "INSERT INTO civicwise_state(namespace,payload,sequence,revision) VALUES($1,$2,$3,0) ON CONFLICT DO NOTHING RETURNING namespace",
+        [namespace, initial, initialSequence],
+      );
+      const row = (
+        await client.query(
+          "SELECT payload,sequence,revision FROM civicwise_state WHERE namespace=$1 FOR UPDATE",
+          [namespace],
+        )
+      ).rows[0] as { payload: string; sequence: string; revision: string };
+      let sequence = Number(row.sequence);
+      const revision = Number(row.revision);
+      if (
+        !Number.isSafeInteger(sequence) ||
+        sequence < 0 ||
+        !Number.isSafeInteger(revision) ||
+        revision < 0
+      ) {
+        throw new DurableStateCorruptionError(namespace);
+      }
+      const state = decodeState(namespace, row.payload, options.validate);
+      const result = update(state, {
+        revision,
+        nextSequence() {
+          if (sequence >= Number.MAX_SAFE_INTEGER) throw new Error("Sequence capacity reached.");
+          return ++sequence;
+        },
+      });
+      if (result && typeof result === "object" && "then" in result)
+        throw new Error("Durable state transactions must be synchronous.");
+      const payload = encodeState(state, options.validate);
+      if (inserted.rowCount || payload !== row.payload || sequence !== Number(row.sequence)) {
+        if (revision >= Number.MAX_SAFE_INTEGER) throw new Error("Revision capacity reached.");
+        await client.query(
+          "UPDATE civicwise_state SET payload=$2,sequence=$3,revision=$4 WHERE namespace=$1",
+          [namespace, payload, sequence, revision + 1],
+        );
+      }
+      await client.query("COMMIT");
+      return result;
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+}
+
+export async function readDurableState<T>(
   namespace: string,
   initialize: () => T,
   options: NamespaceOptions<T> = {},
-): T {
+): Promise<T> {
+  if (process.env.DATABASE_URL)
+    return new PostgresStateStore(getPostgresPool()).read(namespace, initialize, options);
   return getStore().read(namespace, initialize, options);
 }
 
-export function withDurableState<T, R>(
+export async function withDurableState<T, R>(
   namespace: string,
   initialize: () => T,
   update: (state: T, transaction: StateTransaction) => R,
   options: NamespaceOptions<T> = {},
-): R {
+): Promise<R> {
+  if (process.env.DATABASE_URL)
+    return new PostgresStateStore(getPostgresPool()).transaction(
+      namespace,
+      initialize,
+      update,
+      options,
+    );
   return getStore().transaction(namespace, initialize, update, options);
 }

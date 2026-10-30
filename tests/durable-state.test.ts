@@ -246,15 +246,19 @@ test("sample seeding requires explicit opt-in and never replaces existing person
 test("hosted production requires an explicit persistent path; local development retains its default", () => {
   assert.throws(
     () => resolveDatabasePath(undefined, { VERCEL: "1", NODE_ENV: "production" }),
-    /persistent shared/,
+    /transactional shared database adapter/,
   );
   assert.throws(
     () => resolveDatabasePath(":memory:", { VERCEL: "1", VERCEL_ENV: "production", NODE_ENV: "production" }),
-    /persistent shared/,
+    /transactional shared database adapter/,
   );
-  assert.equal(
-    resolveDatabasePath("/data/civicwise.sqlite", { VERCEL: "1", NODE_ENV: "production" }),
-    "/data/civicwise.sqlite",
+  assert.throws(
+    () => resolveDatabasePath("/data/civicwise.sqlite", { VERCEL: "1", NODE_ENV: "production" }),
+    /transactional shared database adapter/,
+  );
+  assert.throws(
+    () => resolveDatabasePath("/tmp/civicwise.sqlite", { VERCEL: "1", NODE_ENV: "production" }),
+    /transactional shared database adapter/,
   );
   assert.equal(resolveDatabasePath(undefined, { NODE_ENV: "development" }), resolve(".data/civicwise.sqlite"));
   assert.throws(() => resolveDatabasePath("  ", { NODE_ENV: "development" }), /valid database path/);

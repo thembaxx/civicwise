@@ -1,19 +1,15 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { CaretLeft as ChevronLeft } from '@phosphor-icons/react/dist/ssr'
-import { IssueDetail } from '@/components/issues/issue-detail'
-import { HonestyNote } from '@/components/issues/honesty-note'
-import { getIssue } from '@/lib/issues-store'
-import { getViewerId } from '@/lib/viewer'
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { CaretLeft as ChevronLeft } from "@phosphor-icons/react/dist/ssr";
+import { IssueDetail } from "@/components/issues/issue-detail";
+import { HonestyNote } from "@/components/issues/honesty-note";
+import { getIssue } from "@/lib/issues-store";
+import { getViewerId } from "@/lib/viewer";
 
-export default async function IssuePage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const { id } = await params
-  const issue = getIssue(await getViewerId(), id)
-  if (!issue) notFound()
+export default async function IssuePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const issue = await getIssue(await getViewerId(), id);
+  if (!issue) notFound();
 
   return (
     <div className="page-stack content-narrow">
@@ -27,5 +23,5 @@ export default async function IssuePage({
       <IssueDetail initial={issue} />
       <HonestyNote />
     </div>
-  )
+  );
 }
