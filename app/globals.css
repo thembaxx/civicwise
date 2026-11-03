@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -185,8 +185,10 @@
     font-weight: 600;
     text-underline-offset: 4px;
   }
-  .text-link:hover {
-    text-decoration: underline;
+  @media (hover: hover) and (pointer: fine) {
+    .text-link:hover {
+      text-decoration: underline;
+    }
   }
   .button-primary,
   .button-secondary,
@@ -209,23 +211,29 @@
     background: var(--primary);
     color: var(--primary-foreground);
   }
-  .button-primary:hover {
-    background: #b8ed27;
+  @media (hover: hover) and (pointer: fine) {
+    .button-primary:hover {
+      background: #b8ed27;
+    }
   }
   .button-secondary {
     background: var(--secondary);
     color: var(--secondary-foreground);
   }
-  .button-secondary:hover {
-    opacity: 0.88;
+  @media (hover: hover) and (pointer: fine) {
+    .button-secondary:hover {
+      opacity: 0.88;
+    }
   }
   .button-outline {
     border: 1px solid var(--border);
     background: var(--card);
     color: var(--foreground);
   }
-  .button-outline:hover {
-    background: var(--muted);
+  @media (hover: hover) and (pointer: fine) {
+    .button-outline:hover {
+      background: var(--muted);
+    }
   }
   :is(.button-primary, .button-secondary, .button-outline):active {
     transform: translateY(1px);
@@ -243,8 +251,10 @@
     padding: 12px 14px;
     font-size: 1rem;
   }
-  .field:hover {
-    border-color: var(--muted-foreground);
+  @media (hover: hover) and (pointer: fine) {
+    .field:hover {
+      border-color: var(--muted-foreground);
+    }
   }
   .field:focus-visible {
     outline: 2px solid var(--ring);
@@ -265,9 +275,11 @@
       background-color 200ms ease,
       transform 200ms ease;
   }
-  .report-action:hover {
-    background: #c1f62f;
-    transform: translateY(-3px);
+  @media (hover: hover) and (pointer: fine) {
+    .report-action:hover {
+      background: #c1f62f;
+      transform: translateY(-3px);
+    }
   }
   .report-action:focus-visible {
     outline: 3px solid #315b46;
