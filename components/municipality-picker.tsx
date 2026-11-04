@@ -49,7 +49,7 @@ export function MunicipalityPicker({
         onChange={(e) =>
           startTransition(() => followMunicipality(e.target.value))
         }
-        className="h-11 w-full appearance-none rounded-xl border border-border bg-card pl-10 pr-10 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-60"
+        className="h-11 w-full appearance-none rounded-xl border border-border bg-card pl-10 pr-10 text-sm [@media(pointer:coarse)]:text-[max(0.875rem,16px)] font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-60"
       >
         {!options.some((option) => option.code === current) && (
           <option value={current}>{current}</option>
