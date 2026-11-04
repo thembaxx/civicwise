@@ -38,6 +38,7 @@ export const metadata: Metadata = {
     'civic accountability',
   ],
   manifest: '/manifest.webmanifest',
+  appleWebApp: { capable: true, title: 'Civicwise', statusBarStyle: 'default' },
   icons: { icon: '/icon.svg', apple: '/apple-icon.png' },
   generator: 'Civicwise',
 }
@@ -49,6 +50,7 @@ export const viewport: Viewport = {
   ],
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default async function RootLayout({
